@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ru.spbstu</groupId>
+    <artifactId>kfirst</artifactId>
+    <version>21.0.0</version>
+
+    <name>kfirst</name>
+
+    <repositories>
+        <repository>
+            <id>github-kotlin-polytech-kotlin-maven</id>
+            <name>kotlin-polytech-kotlin-maven</name>
+            <url>https://maven.polytech.vorpal-research.science</url>
+        </repository>
+        <repository>
+            <id>github-vorpal-research-kotlin-maven</id>
+            <name>vorpal-research-kotlin-maven</name>
+            <url>https://maven.vorpal-research.science</url>
+        </repository>
+    </repositories>
+
+    <parent>
+        <groupId>ru.spbstu</groupId>
+        <artifactId>kfirst-bom</artifactId>
+        <version>21.0.0</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>1.6.10</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>kfirst-runner-plugin</artifactId>
+                <groupId>org.jetbrains.research</groupId>
+                <version>21.0.0</version>
+                <configuration>
+                    <packages>
+                        <package>lesson1.task1</package>
+
+                        <package>lesson2.task1</package>
+                        <package>lesson2.task2</package>
+
+                        <package>lesson3.task1</package>
+                        <package>lesson4.task1</package>
+                        <package>lesson5.task1</package>
+                        <package>lesson6.task1</package>
+                        <package>lesson7.task1</package>
+
+                        <package>lesson8.task1</package>
+                        <package>lesson8.task2</package>
+                        <package>lesson8.task3</package>
+
+                        <package>lesson9.task1</package>
+                        <package>lesson9.task2</package>
+
+                        <package>lesson10.task1</package>
+                        <package>lesson10.task2</package>
+
+                        <package>lesson11.task1</package>
+                        <package>lesson12.task1</package>
+                    </packages>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
