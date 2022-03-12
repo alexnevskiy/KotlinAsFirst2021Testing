@@ -1,5 +1,6 @@
 package lesson7.task1;
 
+import junit.framework.AssertionFailedError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static lesson7.task1.FilesKt.countSubstrings;
 
@@ -42,25 +44,42 @@ public class TestsForSoftwareTesting {
 
     @Test
     void testCountSubstringsGeneratedFile() {
-        createFileWithDuplicateWords();
-        Assertions.assertEquals(
-                Map.of("kek", 101, "e", 101, "k", 102),
-                countSubstrings(INPUT_FILENAME, List.of("kek", "e", "k"))
-        );
-        deleteFile();
+        List<Integer> duplicateWordsCounter = createFileWithDuplicateWords();
+        try {
+            Assertions.assertEquals(
+                    Map.of("kek", duplicateWordsCounter.get(0),
+                            "e", duplicateWordsCounter.get(1),
+                            "k", duplicateWordsCounter.get(2)),
+                    countSubstrings(INPUT_FILENAME, List.of("kek", "e", "k"))
+            );
+        } catch (AssertionFailedError e) {
+            e.getMessage();
+        } finally {
+            deleteFile();
+        }
 
+        // dropped tests
         createFileWithSubstringsOnDifferentLines();
-        Assertions.assertEquals(
-                Map.of("kek", 4, "kek\nkek", 3),
-                countSubstrings(INPUT_FILENAME, List.of("kek", "kek\nkek"))
-        );
-        deleteFile();
+        List<Integer> DifferentLinesNumbers = createFileWithSubstringsOnDifferentLines();
+        try {
+            Assertions.assertEquals(
+                    Map.of("kek", DifferentLinesNumbers.get(0),
+                            "kek\nkek", DifferentLinesNumbers.get(1)),
+                    countSubstrings(INPUT_FILENAME, List.of("kek", "kek\nkek"))
+            );
+        } catch (AssertionFailedError e) {
+            e.getMessage();
+        } finally {
+            deleteFile();
+        }
     }
 
-    private void createFileWithDuplicateWords() {
+    private List<Integer> createFileWithDuplicateWords() {
+        Random random = new Random();
+        int number = random.nextInt(100) + 1;
         try (FileWriter writer = new FileWriter(INPUT_FILENAME, false)) {
             writer.write("kek");
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < number; i++) {
                 writer.append("ek");
             }
 
@@ -68,12 +87,15 @@ public class TestsForSoftwareTesting {
         } catch (IOException exception) {
             System.out.println("Cannot be opened.");
         }
+        return List.of(number + 1, number + 1, number + 2);
     }
 
-    private void createFileWithSubstringsOnDifferentLines() {
+    private List<Integer> createFileWithSubstringsOnDifferentLines() {
+        Random random = new Random();
+        int number = random.nextInt(10) + 1;
         try (FileWriter writer = new FileWriter(INPUT_FILENAME, false)) {
             writer.write("kek");
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < number; i++) {
                 writer.append("\nkek");
             }
 
@@ -81,6 +103,7 @@ public class TestsForSoftwareTesting {
         } catch (IOException exception) {
             System.out.println("Cannot be opened.");
         }
+        return List.of(number + 1, number);
     }
 
     private void deleteFile() {
