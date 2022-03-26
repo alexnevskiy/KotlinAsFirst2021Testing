@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>List.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson4.task1</a> &gt; <span class="el_source">List.kt</span></div><h1>List.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;, &quot;ConvertCallChainIntoSequence&quot;)
+
+package lesson4.task1
+
+import lesson1.task1.discriminant
+import lesson3.task1.isPrime
+import kotlin.math.pow
+import kotlin.math.sqrt
+
+// Урок 4: списки
+// Максимальное количество баллов = 12
+// Рекомендуемое количество баллов = 8
+// Вместе с предыдущими уроками = 24/33
+
+/**
+ * Пример
+ *
+ * Найти все корни уравнения x^2 = y
+ */
+fun sqRoots(y: Double) =
+<span class="nc" id="L21">    when {</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">        y &lt; 0 -&gt; listOf()</span>
+<span class="nc bnc" id="L23" title="All 4 branches missed.">        y == 0.0 -&gt; listOf(0.0)</span>
+        else -&gt; {
+<span class="nc" id="L25">            val root = sqrt(y)</span>
+            // Результат!
+<span class="nc" id="L27">            listOf(-root, root)</span>
+        }
+<span class="nc" id="L29">    }</span>
+
+/**
+ * Пример
+ *
+ * Найти все корни биквадратного уравнения ax^4 + bx^2 + c = 0.
+ * Вернуть список корней (пустой, если корней нет)
+ */
+fun biRoots(a: Double, b: Double, c: Double): List&lt;Double&gt; {
+<span class="nc bnc" id="L38" title="All 4 branches missed.">    if (a == 0.0) {</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">        return if (b == 0.0) listOf()</span>
+<span class="nc" id="L40">        else sqRoots(-c / b)</span>
+    }
+<span class="nc" id="L42">    val d = discriminant(a, b, c)</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (d &lt; 0.0) return listOf()</span>
+<span class="nc bnc" id="L44" title="All 4 branches missed.">    if (d == 0.0) return sqRoots(-b / (2 * a))</span>
+<span class="nc" id="L45">    val y1 = (-b + sqrt(d)) / (2 * a)</span>
+<span class="nc" id="L46">    val y2 = (-b - sqrt(d)) / (2 * a)</span>
+<span class="nc" id="L47">    return sqRoots(y1) + sqRoots(y2)</span>
+}
+
+/**
+ * Пример
+ *
+ * Выделить в список отрицательные элементы из заданного списка
+ */
+fun negativeList(list: List&lt;Int&gt;): List&lt;Int&gt; {
+<span class="nc" id="L56">    val result = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">    for (element in list) {</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (element &lt; 0) {</span>
+<span class="nc" id="L59">            result.add(element)</span>
+        }
+    }
+<span class="nc" id="L62">    return result</span>
+}
+
+/**
+ * Пример
+ *
+ * Изменить знак для всех положительных элементов списка
+ */
+fun invertPositives(list: MutableList&lt;Int&gt;) {
+<span class="nc bnc" id="L71" title="All 4 branches missed.">    for (i in 0 until list.size) {</span>
+<span class="nc" id="L72">        val element = list[i]</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (element &gt; 0) {</span>
+<span class="nc" id="L74">            list[i] = -element</span>
+        }
+    }
+<span class="nc" id="L77">}</span>
+
+/**
+ * Пример
+ *
+ * Из имеющегося списка целых чисел, сформировать список их квадратов
+ */
+<span class="nc" id="L84">fun squares(list: List&lt;Int&gt;) = list.map { it * it }</span>
+
+/**
+ * Пример
+ *
+ * Из имеющихся целых чисел, заданного через vararg-параметр, сформировать массив их квадратов
+ */
+<span class="nc" id="L91">fun squares(vararg array: Int) = squares(array.toList()).toTypedArray()</span>
+
+/**
+ * Пример
+ *
+ * По заданной строке str определить, является ли она палиндромом.
+ * В палиндроме первый символ должен быть равен последнему, второй предпоследнему и т.д.
+ * Одни и те же буквы в разном регистре следует считать равными с точки зрения данной задачи.
+ * Пробелы не следует принимать во внимание при сравнении символов, например, строка
+ * &quot;А роза упала на лапу Азора&quot; является палиндромом.
+ */
+fun isPalindrome(str: String): Boolean {
+<span class="nc bnc" id="L103" title="All 4 branches missed.">    val lowerCase = str.lowercase().filter { it != ' ' }</span>
+<span class="nc bnc" id="L104" title="All 4 branches missed.">    for (i in 0..lowerCase.length / 2) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false</span>
+    }
+<span class="nc" id="L107">    return true</span>
+}
+
+/**
+ * Пример
+ *
+ * По имеющемуся списку целых чисел, например [3, 6, 5, 4, 9], построить строку с примером их суммирования:
+ * 3 + 6 + 5 + 4 + 9 = 27 в данном случае.
+ */
+<span class="nc" id="L116">fun buildSumExample(list: List&lt;Int&gt;) = list.joinToString(separator = &quot; + &quot;, postfix = &quot; = ${list.sum()}&quot;)</span>
+
+/**
+ * Простая (2 балла)
+ *
+ * Найти модуль заданного вектора, представленного в виде списка v,
+ * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
+ * Модуль пустого вектора считать равным 0.0.
+ */
+fun abs(v: List&lt;Double&gt;): Double {
+<span class="nc" id="L126">    var res = 0.0</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    for (element in v) res += element * element</span>
+<span class="nc" id="L128">    return sqrt(res)</span>
+}
+
+/**
+ * Простая (2 балла)
+ *
+ * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
+ */
+fun mean(list: List&lt;Double&gt;): Double {
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (list.isEmpty()) return 0.0</span>
+<span class="nc" id="L138">    var res = 0.0</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">    for (element in list) res += element</span>
+<span class="nc" id="L140">    return res / list.size</span>
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * Центрировать заданный список list, уменьшив каждый элемент на среднее арифметическое всех элементов.
+ * Если список пуст, не делать ничего. Вернуть изменённый список.
+ *
+ * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
+ */
+fun center(list: MutableList&lt;Double&gt;): MutableList&lt;Double&gt; {
+<span class="nc" id="L152">    val clear = mean(list)</span>
+<span class="nc bnc" id="L153" title="All 4 branches missed.">    for (i in list.indices) list[i] -= clear</span>
+<span class="nc" id="L154">    return list</span>
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * Найти скалярное произведение двух векторов равной размерности,
+ * представленные в виде списков a и b. Скалярное произведение считать по формуле:
+ * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
+ */
+fun times(a: List&lt;Int&gt;, b: List&lt;Int&gt;): Int {
+<span class="nc" id="L165">    var res = 0</span>
+<span class="nc bnc" id="L166" title="All 4 branches missed.">    for (i in a.indices) res += a[i] * b[i]</span>
+<span class="nc" id="L167">    return res</span>
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * Рассчитать значение многочлена при заданном x:
+ * p(x) = p0 + p1*x + p2*x^2 + p3*x^3 + ... + pN*x^N.
+ * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
+ * Значение пустого многочлена равно 0 при любом x.
+ */
+fun polynom(p: List&lt;Int&gt;, x: Int): Int {
+<span class="nc" id="L179">    var res = 0</span>
+<span class="nc bnc" id="L180" title="All 4 branches missed.">    for (i in p.indices) res += p[i] * (x.toDouble()).pow(i).toInt()</span>
+<span class="nc" id="L181">    return res</span>
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * В заданном списке list каждый элемент, кроме первого, заменить
+ * суммой данного элемента и всех предыдущих.
+ * Например: 1, 2, 3, 4 -&gt; 1, 3, 6, 10.
+ * Пустой список не следует изменять. Вернуть изменённый список.
+ *
+ * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
+ */
+fun accumulate(list: MutableList&lt;Int&gt;): MutableList&lt;Int&gt; {
+<span class="nc bnc" id="L195" title="All 2 branches missed.">    if (list.isEmpty()) return list</span>
+<span class="nc" id="L196">    var s = list[0]</span>
+<span class="nc bnc" id="L197" title="All 4 branches missed.">    for (i in 1 until list.size) {</span>
+<span class="nc" id="L198">        s += list[i]</span>
+<span class="nc" id="L199">        list[i] = s</span>
+    }
+<span class="nc" id="L201">    return list</span>
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * Разложить заданное натуральное число n &gt; 1 на простые множители.
+ * Результат разложения вернуть в виде списка множителей, например 75 -&gt; (3, 5, 5).
+ * Множители в списке должны располагаться по возрастанию.
+ */
+fun factorize(n: Int): List&lt;Int&gt; {
+<span class="nc bnc" id="L212" title="All 2 branches missed.">    if (isPrime(n)) return listOf(n)</span>
+<span class="nc" id="L213">    val muls = mutableListOf&lt;Int&gt;()</span>
+<span class="nc" id="L214">    var i = 3</span>
+<span class="nc" id="L215">    var x = n</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">    while (x % 2 == 0) {</span>
+<span class="nc" id="L217">        muls.add(2)</span>
+<span class="nc" id="L218">        x /= 2</span>
+    }
+<span class="nc bnc" id="L220" title="All 2 branches missed.">    while (x != 1) {</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        while (!isPrime(i)) i += 2</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        while (x % i == 0) {</span>
+<span class="nc" id="L223">            muls.add(i)</span>
+<span class="nc" id="L224">            x /= i</span>
+        }
+<span class="nc" id="L226">        i += 2</span>
+    }
+<span class="nc" id="L228">    return muls</span>
+}
+
+/**
+ * Сложная (4 балла)
+ *
+ * Разложить заданное натуральное число n &gt; 1 на простые множители.
+ * Результат разложения вернуть в виде строки, например 75 -&gt; 3*5*5
+ * Множители в результирующей строке должны располагаться по возрастанию.
+ */
+<span class="nc" id="L238">fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = &quot;*&quot;)</span>
+
+/**
+ * Средняя (3 балла)
+ *
+ * Перевести заданное целое число n &gt;= 0 в систему счисления с основанием base &gt; 1.
+ * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
+ * например: n = 100, base = 4 -&gt; (1, 2, 1, 0) или n = 250, base = 14 -&gt; (1, 3, 12)
+ */
+fun convert(n: Int, base: Int): List&lt;Int&gt; {
+<span class="nc" id="L248">    val res = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">    if (n == 0) {</span>
+<span class="nc" id="L250">        res.add(0)</span>
+<span class="nc" id="L251">        return res</span>
+    }
+<span class="nc" id="L253">    var x = n</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">    while (x != 0) {</span>
+<span class="nc" id="L255">        res.add(x % base)</span>
+<span class="nc" id="L256">        x /= base</span>
+    }
+<span class="nc" id="L258">    return res.reversed()</span>
+}
+
+/**
+ * Сложная (4 балла)
+ *
+ * Перевести заданное целое число n &gt;= 0 в систему счисления с основанием 1 &lt; base &lt; 37.
+ * Результат перевода вернуть в виде строки, цифры более 9 представлять латинскими
+ * строчными буквами: 10 -&gt; a, 11 -&gt; b, 12 -&gt; c и так далее.
+ * Например: n = 100, base = 4 -&gt; 1210, n = 250, base = 14 -&gt; 13c
+ *
+ * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
+ * (например, n.toString(base) и подобные), запрещается.
+ */
+fun convertToString(n: Int, base: Int): String =
+<span class="nc" id="L273">    convert(n, base).joinToString(separator = &quot;&quot;, transform = {</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (it &lt; 10) &quot;$it&quot; else {</span>
+<span class="nc" id="L275">            val nit = 'a' + (it - 10)</span>
+<span class="nc" id="L276">            &quot;$nit&quot;</span>
+        }
+<span class="nc" id="L278">    })</span>
+
+/**
+ * Средняя (3 балла)
+ *
+ * Перевести число, представленное списком цифр digits от старшей к младшей,
+ * из системы счисления с основанием base в десятичную.
+ * Например: digits = (1, 3, 12), base = 14 -&gt; 250
+ */
+fun decimal(digits: List&lt;Int&gt;, base: Int): Int {
+<span class="nc" id="L288">    var res = 0</span>
+<span class="nc bnc" id="L289" title="All 4 branches missed.">    for (i in digits.size - 1 downTo 0) res += digits[digits.size - i - 1] * base.toDouble().pow(i).toInt()</span>
+<span class="nc" id="L290">    return res</span>
+}
+
+/**
+ * Сложная (4 балла)
+ *
+ * Перевести число, представленное цифровой строкой str,
+ * из системы счисления с основанием base в десятичную.
+ * Цифры более 9 представляются латинскими строчными буквами:
+ * 10 -&gt; a, 11 -&gt; b, 12 -&gt; c и так далее.
+ * Например: str = &quot;13c&quot;, base = 14 -&gt; 250
+ *
+ * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
+ * (например, str.toInt(base)), запрещается.
+ */
+fun decimalFromString(str: String, base: Int): Int {
+<span class="nc" id="L306">    var res = 0</span>
+<span class="nc bnc" id="L307" title="All 4 branches missed.">    for (i in str.length - 1 downTo 0) {</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">        val x = if (str[i] &gt; '9') str[i] - 'a' + 10 else str[i].digitToInt()</span>
+<span class="nc" id="L309">        res += x * base.toDouble().pow(str.length - i - 1).toInt()</span>
+    }
+<span class="nc" id="L311">    return res</span>
+}
+
+/**
+ * Сложная (5 баллов)
+ *
+ * Перевести натуральное число n &gt; 0 в римскую систему.
+ * Римские цифры: 1 = I, 4 = IV, 5 = V, 9 = IX, 10 = X, 40 = XL, 50 = L,
+ * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
+ * Например: 23 = XXIII, 44 = XLIV, 100 = C
+ */
+fun roman(n: Int): String {
+<span class="nc" id="L323">    val list = mutableListOf&lt;Int&gt;()</span>
+<span class="nc" id="L324">    var res = &quot;&quot;</span>
+<span class="nc bnc" id="L325" title="All 2 branches missed.">    for (i in convert(n, 10)) list.add(i)</span>
+<span class="nc bnc" id="L326" title="All 4 branches missed.">    for (i in list.indices) {</span>
+<span class="nc" id="L327">        list[i] *= 10.0.pow(list.size - i - 1).toInt()</span>
+<span class="nc" id="L328">        res += when {</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">            list[i] &lt; 4 -&gt; &quot;I&quot;.repeat(list[i])</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">            list[i] == 4 -&gt; &quot;IV&quot;</span>
+<span class="nc bnc" id="L331" title="All 6 branches missed.">            list[i] in 5..8 -&gt; &quot;V&quot; + &quot;I&quot;.repeat(list[i] - 5)</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">            list[i] == 9 -&gt; &quot;IX&quot;</span>
+<span class="nc bnc" id="L333" title="All 6 branches missed.">            list[i] in 10..39 -&gt; &quot;X&quot;.repeat(list[i] / 10)</span>
+<span class="nc bnc" id="L334" title="All 2 branches missed.">            list[i] == 40 -&gt; &quot;XL&quot;</span>
+<span class="nc bnc" id="L335" title="All 6 branches missed.">            list[i] in 50..89 -&gt; &quot;L&quot; + &quot;X&quot;.repeat((list[i] - 50) / 10)</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">            list[i] == 90 -&gt; &quot;XC&quot;</span>
+<span class="nc bnc" id="L337" title="All 6 branches missed.">            list[i] in 100..399 -&gt; &quot;C&quot;.repeat(list[i] / 100)</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">            list[i] == 400 -&gt; &quot;CD&quot;</span>
+<span class="nc bnc" id="L339" title="All 6 branches missed.">            list[i] in 500..899 -&gt; &quot;D&quot; + &quot;C&quot;.repeat((list[i] - 500) / 100)</span>
+<span class="nc bnc" id="L340" title="All 2 branches missed.">            list[i] == 900 -&gt; &quot;CM&quot;</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">            list[i] &gt; 900 -&gt; &quot;M&quot;.repeat(list[i] / 1000)</span>
+<span class="nc" id="L342">            else -&gt; &quot;&quot;</span>
+        }
+    }
+<span class="nc" id="L345">    return res</span>
+}
+
+/**
+ * Очень сложная (7 баллов)
+ *
+ * Записать заданное натуральное число 1..999999 прописью по-русски.
+ * Например, 375 = &quot;триста семьдесят пять&quot;,
+ * 23964 = &quot;двадцать три тысячи девятьсот шестьдесят четыре&quot;
+ */
+fun russian(n: Int): String {
+    fun go(n: Int, h: Boolean): String {
+<span class="nc bnc" id="L357" title="All 2 branches missed.">        if (n == 0) return &quot;&quot;</span>
+<span class="nc" id="L358">        var goRes = &quot;&quot;</span>
+<span class="nc" id="L359">        val digits = convert(n, 10)</span>
+<span class="nc" id="L360">        var len = digits.size</span>
+<span class="nc" id="L361">        var currentDigit = 0</span>
+<span class="nc bnc" id="L362" title="All 2 branches missed.">        while (len &gt; 0) {</span>
+<span class="nc bnc" id="L363" title="All 4 branches missed.">            when (len) {</span>
+                3 -&gt; {
+<span class="nc bnc" id="L365" title="All 9 branches missed.">                    goRes += when (digits[currentDigit]) {</span>
+<span class="nc" id="L366">                        9 -&gt; &quot;девятьсот &quot;</span>
+<span class="nc" id="L367">                        8 -&gt; &quot;восемьсот &quot;</span>
+<span class="nc" id="L368">                        7 -&gt; &quot;семьсот &quot;</span>
+<span class="nc" id="L369">                        6 -&gt; &quot;шестьсот &quot;</span>
+<span class="nc" id="L370">                        5 -&gt; &quot;пятьсот &quot;</span>
+<span class="nc" id="L371">                        4 -&gt; &quot;четыреста &quot;</span>
+<span class="nc" id="L372">                        3 -&gt; &quot;триста &quot;</span>
+<span class="nc" id="L373">                        2 -&gt; &quot;двести &quot;</span>
+<span class="nc" id="L374">                        else -&gt; &quot;сто &quot;</span>
+                    }
+<span class="nc" id="L376">                    len--</span>
+<span class="nc" id="L377">                    currentDigit++</span>
+                }
+                2 -&gt; {
+<span class="nc" id="L380">                    goRes.trim()</span>
+<span class="nc bnc" id="L381" title="All 2 branches missed.">                    if (digits[currentDigit] != 1) len-- else len -= 2</span>
+<span class="nc bnc" id="L382" title="All 10 branches missed.">                    when (digits[currentDigit]) {</span>
+<span class="nc" id="L383">                        9 -&gt; goRes += &quot;девяносто &quot;</span>
+<span class="nc" id="L384">                        8 -&gt; goRes += &quot;восемьдесят &quot;</span>
+<span class="nc" id="L385">                        7 -&gt; goRes += &quot;семьдесят &quot;</span>
+<span class="nc" id="L386">                        6 -&gt; goRes += &quot;шестьдесят &quot;</span>
+<span class="nc" id="L387">                        5 -&gt; goRes += &quot;пятьдесят &quot;</span>
+<span class="nc" id="L388">                        4 -&gt; goRes += &quot;сорок &quot;</span>
+<span class="nc" id="L389">                        3 -&gt; goRes += &quot;тридцать &quot;</span>
+<span class="nc" id="L390">                        2 -&gt; goRes += &quot;двадцать &quot;</span>
+<span class="nc" id="L391">                        0 -&gt; goRes += &quot;&quot;</span>
+<span class="nc bnc" id="L392" title="All 10 branches missed.">                        else -&gt; goRes += when (digits[currentDigit + 1]) {</span>
+<span class="nc" id="L393">                            9 -&gt; &quot;девятнадцать&quot;</span>
+<span class="nc" id="L394">                            8 -&gt; &quot;восемнадцать&quot;</span>
+<span class="nc" id="L395">                            7 -&gt; &quot;семнадцать&quot;</span>
+<span class="nc" id="L396">                            6 -&gt; &quot;шестнадцать&quot;</span>
+<span class="nc" id="L397">                            5 -&gt; &quot;пятнадцать&quot;</span>
+<span class="nc" id="L398">                            4 -&gt; &quot;четырнадцать&quot;</span>
+<span class="nc" id="L399">                            3 -&gt; &quot;тринадцать&quot;</span>
+<span class="nc" id="L400">                            2 -&gt; &quot;двенадцать&quot;</span>
+<span class="nc" id="L401">                            1 -&gt; &quot;одиннадцать&quot;</span>
+<span class="nc" id="L402">                            else -&gt; &quot;десять&quot;</span>
+                        }
+                    }
+<span class="nc" id="L405">                    currentDigit++</span>
+                }
+                1 -&gt; {
+<span class="nc" id="L408">                    goRes.trim()</span>
+<span class="nc" id="L409">                    len--</span>
+<span class="nc bnc" id="L410" title="All 10 branches missed.">                    goRes += when (digits[currentDigit]) {</span>
+<span class="nc" id="L411">                        9 -&gt; &quot;девять&quot;</span>
+<span class="nc" id="L412">                        8 -&gt; &quot;восемь&quot;</span>
+<span class="nc" id="L413">                        7 -&gt; &quot;семь&quot;</span>
+<span class="nc" id="L414">                        6 -&gt; &quot;шесть&quot;</span>
+<span class="nc" id="L415">                        5 -&gt; &quot;пять&quot;</span>
+<span class="nc" id="L416">                        4 -&gt; &quot;четыре&quot;</span>
+<span class="nc" id="L417">                        3 -&gt; &quot;три&quot;</span>
+<span class="nc bnc" id="L418" title="All 2 branches missed.">                        2 -&gt; if (h) &quot;две&quot; else &quot;два&quot;</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">                        1 -&gt; if (h) &quot;одна&quot; else &quot;один&quot;</span>
+<span class="nc" id="L420">                        else -&gt; &quot;&quot;</span>
+                    }
+                }
+            }
+        }
+<span class="nc" id="L425">        return goRes.trim()</span>
+    }
+
+<span class="nc bnc" id="L428" title="All 2 branches missed.">    if (n == 0) return &quot;ноль&quot;</span>
+<span class="nc" id="L429">    var res = &quot;&quot;</span>
+<span class="nc" id="L430">    val hundreds = mutableListOf&lt;Int&gt;()</span>
+<span class="nc" id="L431">    hundreds.add((n - n % 1000) / 1000)</span>
+<span class="nc" id="L432">    hundreds.add(n % 1000)</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">    if (hundreds[0] != 0) {</span>
+<span class="nc" id="L434">        res += go(hundreds[0], true)</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">        res += if ((hundreds[0] % 100 - hundreds[0] % 10) / 10 != 1)</span>
+<span class="nc bnc" id="L436" title="All 3 branches missed.">            when (hundreds[0] % 10) {</span>
+<span class="nc" id="L437">                1 -&gt; &quot; тысяча &quot;</span>
+<span class="nc" id="L438">                2, 3, 4 -&gt; &quot; тысячи &quot;</span>
+<span class="nc" id="L439">                else -&gt; &quot; тысяч &quot;</span>
+            }
+<span class="nc" id="L441">        else &quot; тысяч &quot;</span>
+    }
+<span class="nc" id="L443">    res += go(hundreds[1], false)</span>
+<span class="nc" id="L444">    return res.trim()</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

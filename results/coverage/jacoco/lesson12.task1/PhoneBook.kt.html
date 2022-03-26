@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PhoneBook.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson12.task1</a> &gt; <span class="el_source">PhoneBook.kt</span></div><h1>PhoneBook.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson12.task1
+
+/**
+ * Класс &quot;Телефонная книга&quot;.
+ *
+ * Общая сложность задания -- средняя, общая ценность в баллах -- 14.
+ * Объект класса хранит список людей и номеров их телефонов,
+ * при чём у каждого человека может быть более одного номера телефона.
+ * Человек задаётся строкой вида &quot;Фамилия Имя&quot;.
+ * Телефон задаётся строкой из цифр, +, *, #, -.
+ * Поддерживаемые методы: добавление / удаление человека,
+ * добавление / удаление телефона для заданного человека,
+ * поиск номера(ов) телефона по заданному имени человека,
+ * поиск человека по заданному номеру телефона.
+ *
+ * Класс должен иметь конструктор по умолчанию (без параметров).
+ */
+<span class="nc" id="L20">class PhoneBook {</span>
+
+<span class="nc" id="L22">    private val book: MutableMap&lt;String, MutableSet&lt;String&gt;&gt; = mutableMapOf()</span>
+
+
+    /**
+     * Добавить человека.
+     * Возвращает true, если человек был успешно добавлен,
+     * и false, если человек с таким именем уже был в телефонной книге
+     * (во втором случае телефонная книга не должна меняться).
+     */
+    fun addHuman(name: String): Boolean {
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (name in book.keys) return false</span>
+<span class="nc" id="L33">        book[name] = mutableSetOf()</span>
+<span class="nc" id="L34">        return true</span>
+    }
+
+    /**
+     * Убрать человека.
+     * Возвращает true, если человек был успешно удалён,
+     * и false, если человек с таким именем отсутствовал в телефонной книге
+     * (во втором случае телефонная книга не должна меняться).
+     */
+    fun removeHuman(name: String): Boolean {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (name !in book.keys) return false</span>
+<span class="nc" id="L45">        book.remove(name)</span>
+<span class="nc" id="L46">        return true</span>
+    }
+
+    /**
+     * Добавить номер телефона.
+     * Возвращает true, если номер был успешно добавлен,
+     * и false, если человек с таким именем отсутствовал в телефонной книге,
+     * либо у него уже был такой номер телефона,
+     * либо такой номер телефона зарегистрирован за другим человеком.
+     */
+    fun addPhone(name: String, phone: String): Boolean {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (name !in book.keys)</span>
+<span class="nc" id="L58">            return false</span>
+        else {
+<span class="nc bnc" id="L60" title="All 4 branches missed.">            for ((_, v) in book) if (phone in v) return false</span>
+<span class="nc" id="L61">            book[name]!!.add(phone)</span>
+<span class="nc" id="L62">            return true</span>
+        }
+    }
+
+    /**
+     * Убрать номер телефона.
+     * Возвращает true, если номер был успешно удалён,
+     * и false, если человек с таким именем отсутствовал в телефонной книге
+     * либо у него не было такого номера телефона.
+     */
+    fun removePhone(name: String, phone: String): Boolean {
+<span class="nc bnc" id="L73" title="All 4 branches missed.">        if (name !in book.keys || phone !in book[name]!!) return false</span>
+<span class="nc" id="L74">        book[name]!!.remove(phone)</span>
+<span class="nc" id="L75">        return true</span>
+    }
+
+    /**
+     * Вернуть все номера телефона заданного человека.
+     * Если этого человека нет в книге, вернуть пустой список
+     */
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    fun phones(name: String): Set&lt;String&gt; = book[name] ?: setOf()</span>
+
+    /**
+     * Вернуть имя человека по заданному номеру телефона.
+     * Если такого номера нет в книге, вернуть null.
+     */
+    fun humanByPhone(phone: String): String? {
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        for ((n, p) in book) {</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (phone in p) return n</span>
+        }
+<span class="nc" id="L92">        return null</span>
+    }
+
+    /**
+     * Две телефонные книги равны, если в них хранится одинаковый набор людей,
+     * и каждому человеку соответствует одинаковый набор телефонов.
+     * Порядок людей / порядок телефонов в книге не должен иметь значения.
+     */
+<span class="nc bnc" id="L100" title="All 4 branches missed.">    override fun equals(other: Any?): Boolean = other is PhoneBook &amp;&amp; other.book == this.book</span>
+
+<span class="nc" id="L102">    override fun hashCode(): Int = book.hashCode()</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
