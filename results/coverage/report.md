@@ -23,7 +23,7 @@ Tests run: 6, Failures: 3, Errors: 0, Skipped: 0
 
 В `lesson5` тестировалось две функции: `mergePhoneBooks(Map, Map)` и `containsIn(Map, Map)`. Покрытие можно видеть ниже.
 
-![](images\lesson5.png)
+![](images/lesson5.png)
 
 Так как покрытие 100% по обеим метрикам, то комментировать тут нечего.
 
@@ -31,11 +31,11 @@ Tests run: 6, Failures: 3, Errors: 0, Skipped: 0
 
 В `lesson6` тестировалось две функции: `fromRoman(String)` и `plusMinus(String)`. Покрытие можно видеть ниже.
 
-![](images\lesson6.png)
+![](images/lesson6.png)
 
 В функции `plusMinus(String)` покрытие по ветвям составило 90%. Рассмотрим код программы и попробуем определить причину неполного покрытия.
 
-![](images\plusMinus.png)
+![](images/plusMinus.png)
 
 Видно, что не полностью покрытыми являются два цикла и один `when`. Цвета ромбиков могут быть 3 типов:
 
@@ -60,6 +60,6 @@ when (commands[i]) {
 
 В `lesson7` тестировалась лишь одна функция `countSubstrings(String, List)`, покрытие которой можно видеть ниже.
 
-![](images\lesson7.png)
+![](images/lesson7.png)
 
 Покрытие функции составило 100%, поэтому комментировать здесь тоже нечего.
