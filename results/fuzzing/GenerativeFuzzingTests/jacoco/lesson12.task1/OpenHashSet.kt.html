@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OpenHashSet.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson12.task1</a> &gt; <span class="el_source">OpenHashSet.kt</span></div><h1>OpenHashSet.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson12.task1
+
+/**
+ * Класс &quot;хеш-таблица с открытой адресацией&quot;
+ *
+ * Общая сложность задания -- сложная, общая ценность в баллах -- 20.
+ * Объект класса хранит данные типа T в виде хеш-таблицы.
+ * Хеш-таблица не может содержать равные по equals элементы.
+ * Подробности по организации см. статью википедии &quot;Хеш-таблица&quot;, раздел &quot;Открытая адресация&quot;.
+ * Методы: добавление элемента, проверка вхождения элемента, сравнение двух таблиц на равенство.
+ * В этом задании не разрешается использовать библиотечные классы HashSet, HashMap и им подобные,
+ * а также любые функции, создающие множества (mutableSetOf и пр.).
+ *
+ * В конструктор хеш-таблицы передаётся её вместимость (максимальное количество элементов)
+ */
+<span class="nc" id="L18">class OpenHashSet&lt;T&gt;(val capacity: Int) {</span>
+
+    /**
+     * Массив для хранения элементов хеш-таблицы
+     */
+<span class="nc bnc" id="L23" title="All 2 branches missed.">    internal val elements = Array&lt;Any?&gt;(capacity) { null }</span>
+
+    /**
+     * Число элементов в хеш-таблице
+     */
+    val size: Int
+        get() {
+<span class="nc" id="L30">            var res = 0</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            for (el in elements)</span>
+<span class="nc" id="L32">                when (el) {</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">                    null -&gt; continue</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">                    is MutableList&lt;*&gt; -&gt; res += el.size</span>
+<span class="nc" id="L35">                    else -&gt; res++</span>
+                }
+<span class="nc" id="L37">            return res</span>
+        }
+
+    /**
+     * Признак пустоты
+     */
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    fun isEmpty(): Boolean = this.size == 0</span>
+
+    /**
+     * Добавление элемента.
+     * Вернуть true, если элемент был успешно добавлен,
+     * или false, если такой элемент уже был в таблице, или превышена вместимость таблицы.
+     */
+    fun add(element: T): Boolean {
+<span class="nc bnc" id="L51" title="All 4 branches missed.">        if (element in this || this.size == capacity) return false</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        val i = element.hashCode() % capacity</span>
+<span class="nc" id="L53">        when (val suspect = elements[i]) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">            null -&gt; elements[i] = element</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            is MutableList&lt;*&gt; -&gt; elements[i] = mutableListOf(element) + suspect</span>
+<span class="nc" id="L56">            else -&gt; elements[i] = mutableListOf(suspect, element)</span>
+        }
+<span class="nc" id="L58">        return true</span>
+    }
+
+    /**
+     * Проверка, входит ли заданный элемент в хеш-таблицу
+     */
+    operator fun contains(element: T): Boolean {
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        val i = element.hashCode() % capacity</span>
+<span class="nc" id="L66">        when (val suspect = elements[i]) {</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">            null -&gt; return false</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            is MutableList&lt;*&gt; -&gt; element in suspect</span>
+<span class="nc" id="L69">            else -&gt; return suspect == element</span>
+        }
+<span class="nc" id="L71">        return true</span>
+    }
+
+    /**
+     * Таблицы равны, если в них одинаковое количество элементов,
+     * и любой элемент из второй таблицы входит также и в первую
+     */
+    override fun equals(other: Any?): Boolean {
+<span class="nc bnc" id="L79" title="All 4 branches missed.">        if (other is OpenHashSet&lt;*&gt; &amp;&amp; other.size == this.size) {</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            for (el in other.elements)</span>
+<span class="nc" id="L81">                when (el) {</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">                    null -&gt; continue</span>
+<span class="nc bnc" id="L83" title="All 8 branches missed.">                    is MutableList&lt;*&gt; -&gt; if (el.any { it as T !in this }) return false</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                    else -&gt; if (el as T !in this) return false</span>
+                }
+<span class="nc" id="L86">            return true</span>
+        } else {
+<span class="nc" id="L88">            return false</span>
+        }
+    }
+
+    override fun hashCode(): Int {
+<span class="nc" id="L93">        var res = 0</span>
+<span class="nc bnc" id="L94" title="All 4 branches missed.">        for (el in elements) if (el != null) res += el.hashCode()</span>
+<span class="nc" id="L95">        return res</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

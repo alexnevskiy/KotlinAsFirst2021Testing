@@ -1,0 +1,862 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Files.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson7.task1</a> &gt; <span class="el_source">Files.kt</span></div><h1>Files.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;, &quot;ConvertCallChainIntoSequence&quot;)
+
+package lesson7.task1
+
+import lesson4.task1.convert
+import java.io.File
+import kotlin.math.floor
+import kotlin.math.max
+
+// Урок 7: работа с файлами
+// Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
+// Максимальное количество баллов = 55
+// Рекомендуемое количество баллов = 20
+// Вместе с предыдущими уроками (пять лучших, 3-7) = 55/103
+
+/**
+ * Пример
+ *
+ * Во входном файле с именем inputName содержится некоторый текст.
+ * Вывести его в выходной файл с именем outputName, выровняв по левому краю,
+ * чтобы длина каждой строки не превосходила lineLength.
+ * Слова в слишком длинных строках следует переносить на следующую строку.
+ * Слишком короткие строки следует дополнять словами из следующей строки.
+ * Пустые строки во входном файле обозначают конец абзаца,
+ * их следует сохранить и в выходном файле
+ */
+fun alignFile(inputName: String, lineLength: Int, outputName: String) {
+<span class="nc bnc" id="L28" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc" id="L29">    var currentLineLength = 0</span>
+    fun append(word: String) {
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (currentLineLength &gt; 0) {</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">            if (word.length + currentLineLength &gt;= lineLength) {</span>
+<span class="nc" id="L33">                writer.newLine()</span>
+<span class="nc" id="L34">                currentLineLength = 0</span>
+            } else {
+<span class="nc" id="L36">                writer.write(&quot; &quot;)</span>
+<span class="nc" id="L37">                currentLineLength++</span>
+            }
+        }
+<span class="nc" id="L40">        writer.write(word)</span>
+<span class="nc" id="L41">        currentLineLength += word.length</span>
+<span class="nc" id="L42">    }</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    for (line in File(inputName).readLines()) {</span>
+<span class="nc bnc" id="L44" title="All 4 branches missed.">        if (line.isEmpty()) {</span>
+<span class="nc" id="L45">            writer.newLine()</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">            if (currentLineLength &gt; 0) {</span>
+<span class="nc" id="L47">                writer.newLine()</span>
+<span class="nc" id="L48">                currentLineLength = 0</span>
+            }
+<span class="nc" id="L50">            continue</span>
+        }
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        for (word in line.split(Regex(&quot;\\s+&quot;))) {</span>
+<span class="nc" id="L53">            append(word)</span>
+        }
+    }
+<span class="nc" id="L56">    writer.close()</span>
+<span class="nc" id="L57">}</span>
+
+/**
+ * Простая (8 баллов)
+ *
+ * Во входном файле с именем inputName содержится некоторый текст.
+ * Некоторые его строки помечены на удаление первым символом _ (подчёркивание).
+ * Перенести в выходной файл с именем outputName все строки входного файла, убрав при этом помеченные на удаление.
+ * Все остальные строки должны быть перенесены без изменений, включая пустые строки.
+ * Подчёркивание в середине и/или в конце строк значения не имеет.
+ */
+fun deleteMarked(inputName: String, outputName: String) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    for (line in File(inputName).readLines()) {</span>
+<span class="nc bnc" id="L71" title="All 4 branches missed.">        if (line.isNotEmpty())</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            if (line[0] == '_')</span>
+<span class="nc" id="L73">                continue</span>
+<span class="nc" id="L74">        writer.write(line)</span>
+<span class="nc" id="L75">        writer.newLine()</span>
+    }
+
+<span class="nc" id="L78">    writer.close()</span>
+<span class="nc" id="L79">}</span>
+
+/**
+ * Средняя (14 баллов)
+ *
+ * Во входном файле с именем inputName содержится некоторый текст.
+ * На вход подаётся список строк substrings.
+ * Вернуть ассоциативный массив с числом вхождений каждой из строк в текст.
+ * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
+ *
+ */
+fun countSubstrings(inputName: String, substrings: List&lt;String&gt;): Map&lt;String, Int&gt; {
+<span class="fc" id="L91">    val res = mutableMapOf&lt;String, Int&gt;()</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">    for (str in substrings) res[str] = 0</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    for (line in File(inputName).readLines()) {</span>
+<span class="fc" id="L94">        val gLine = line.lowercase()</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (key in res.keys) {</span>
+<span class="fc" id="L96">            val gKey = key.lowercase()</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">            if (gLine.length &gt;= gKey.length) {</span>
+<span class="fc" id="L98">                var indexLeft = 0</span>
+<span class="fc" id="L99">                var indexRight = gKey.length</span>
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">                while (indexRight != gLine.length + 1) {</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">                    if (gLine.substring(indexLeft, indexRight) == gKey)</span>
+<span class="fc" id="L103">                        res[key] = res[key]!! + 1</span>
+<span class="fc" id="L104">                    indexLeft++</span>
+<span class="fc" id="L105">                    indexRight++</span>
+                }
+            }
+        }
+    }
+<span class="fc" id="L110">    return res</span>
+}
+
+
+/**
+ * Средняя (12 баллов)
+ *
+ * В русском языке, как правило, после букв Ж, Ч, Ш, Щ пишется И, А, У, а не Ы, Я, Ю.
+ * Во входном файле с именем inputName содержится некоторый текст на русском языке.
+ * Проверить текст во входном файле на соблюдение данного правила и вывести в выходной
+ * файл outputName текст с исправленными ошибками.
+ *
+ * Регистр заменённых букв следует сохранять.
+ *
+ * Исключения (жюри, брошюра, парашют) в рамках данного задания обрабатывать не нужно
+ *
+ */
+fun sibilants(inputName: String, outputName: String) {
+    fun correct(word: String): String {
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        for (ex in listOf(&quot;жури&quot;, &quot;брошур&quot;, &quot;парашут&quot;))</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">            if (word.lowercase().substring(word.indices) in ex) return word</span>
+<span class="nc" id="L131">        val inds = mutableListOf&lt;Int&gt;()</span>
+<span class="nc" id="L132">        val sb = StringBuilder()</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        for (sibilant in &quot;жчшщ&quot;) {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">            if (sibilant !in word.lowercase())</span>
+<span class="nc" id="L135">                continue</span>
+<span class="nc bnc" id="L136" title="All 4 branches missed.">            for (i in word.indices)</span>
+<span class="nc bnc" id="L137" title="All 4 branches missed.">                if (word.lowercase()[i] == sibilant &amp;&amp; i != word.lastIndex) inds.add(i + 1)</span>
+        }
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (inds.isEmpty()) return word</span>
+<span class="nc" id="L140">        var prev = 0</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        for (index in inds.sorted()) {</span>
+<span class="nc" id="L142">            sb.append(word.substring(prev until index))</span>
+<span class="nc" id="L143">            sb.append(</span>
+<span class="nc" id="L144">                when (word[index]) {</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">                    'Ы' -&gt; 'И'</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">                    'Я' -&gt; 'А'</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">                    'Ю' -&gt; 'У'</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">                    'ы' -&gt; 'и'</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">                    'я' -&gt; 'а'</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                    'ю' -&gt; 'у'</span>
+<span class="nc" id="L151">                    else -&gt; word[index]</span>
+                }
+            )
+<span class="nc" id="L154">            prev = index + 1</span>
+        }
+<span class="nc" id="L156">        sb.append(word.substring(prev until word.length))</span>
+<span class="nc" id="L157">        return &quot;$sb&quot;</span>
+    }
+
+
+<span class="nc bnc" id="L161" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">    for (line in File(inputName).readLines()) {</span>
+<span class="nc" id="L163">        val sb = StringBuilder()</span>
+<span class="nc" id="L164">        val words = line.split(&quot; &quot;)</span>
+<span class="nc bnc" id="L165" title="All 4 branches missed.">        for (i in 0 until words.size - 1)</span>
+<span class="nc" id="L166">            sb.append(correct(words[i]) + &quot; &quot;)</span>
+<span class="nc" id="L167">        sb.append(correct(words.last()))</span>
+<span class="nc" id="L168">        writer.write(&quot;$sb&quot;)</span>
+<span class="nc" id="L169">        writer.newLine()</span>
+    }
+<span class="nc" id="L171">    writer.close()</span>
+<span class="nc" id="L172">}</span>
+
+/**
+ * Средняя (15 баллов)
+ *
+ * Во входном файле с именем inputName содержится некоторый текст (в том числе, и на русском языке).
+ * Вывести его в выходной файл с именем outputName, выровняв по центру
+ * относительно самой длинной строки.
+ *
+ * Выравнивание следует производить путём добавления пробелов в начало строки.
+ *
+ *
+ * Следующие правила должны быть выполнены:
+ * 1) Пробелы в начале и в конце всех строк не следует сохранять.
+ * 2) В случае невозможности выравнивания строго по центру, строка должна быть сдвинута в ЛЕВУЮ сторону
+ * 3) Пустые строки не являются особым случаем, их тоже следует выравнивать
+ * 4) Число строк в выходном файле должно быть равно числу строк во входном (в т. ч. пустых)
+ *
+ */
+fun centerFile(inputName: String, outputName: String) {
+<span class="nc bnc" id="L192" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc" id="L193">    val lines = File(inputName).readLines().toMutableList()</span>
+<span class="nc" id="L194">    var bigLen = 0</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">    for (j in lines.indices) {</span>
+<span class="nc" id="L196">        var line = lines[j]</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (line == &quot;&quot;) continue</span>
+<span class="nc" id="L198">        var i = 0</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        while (line[i] == ' ') i++</span>
+<span class="nc" id="L200">        var k = line.length - 1</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        while (line[k] == ' ') k--</span>
+<span class="nc" id="L202">        line = line.substring(i, k + 1)</span>
+<span class="nc" id="L203">        lines[j] = line</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">        if (line.length &gt; bigLen) bigLen = line.length</span>
+    }
+<span class="nc bnc" id="L206" title="All 2 branches missed.">    for (line in lines) {</span>
+<span class="nc" id="L207">        val num = when (line.length) {</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">            bigLen -&gt; 0</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            0 -&gt; bigLen / 2</span>
+<span class="nc" id="L210">            else -&gt; floor((bigLen - line.length) / 2.0).toInt()</span>
+        }
+<span class="nc" id="L212">        val newLine = &quot; &quot;.repeat(num) + line</span>
+<span class="nc" id="L213">        writer.write(newLine)</span>
+<span class="nc" id="L214">        writer.newLine()</span>
+    }
+<span class="nc" id="L216">    writer.close()</span>
+<span class="nc" id="L217">}</span>
+
+/**
+ * Сложная (20 баллов)
+ *
+ * Во входном файле с именем inputName содержится некоторый текст (в том числе, и на русском языке).
+ * Вывести его в выходной файл с именем outputName, выровняв по левому и правому краю относительно
+ * самой длинной строки.
+ * Выравнивание производить, вставляя дополнительные пробелы между словами: равномерно по всей строке
+ *
+ * Слова внутри строки отделяются друг от друга одним или более пробелом.
+ *
+ * Следующие правила должны быть выполнены:
+ * 1) Каждая строка входного и выходного файла не должна начинаться или заканчиваться пробелом.
+ * 2) Пустые строки или строки из пробелов трансформируются в пустые строки без пробелов.
+ * 3) Строки из одного слова выводятся без пробелов.
+ * 4) Число строк в выходном файле должно быть равно числу строк во входном (в т. ч. пустых).
+ *
+ * Равномерность определяется следующими формальными правилами:
+ * 5) Число пробелов между каждыми двумя парами соседних слов не должно отличаться более, чем на 1.
+ * 6) Число пробелов между более левой парой соседних слов должно быть больше или равно числу пробелов
+ *    между более правой парой соседних слов.
+ *
+ * Следует учесть, что входной файл может содержать последовательности из нескольких пробелов  между слвоами. Такие
+ * последовательности следует учитывать при выравнивании и при необходимости избавляться от лишних пробелов.
+ * Из этого следуют следующие правила:
+ * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
+ * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
+ */
+fun alignFileByWidth(inputName: String, outputName: String) {
+    /*
+    fun String.betterIsEmpty(): Boolean =
+        if (this.isEmpty()) true
+        else this.all { it == ' ' }
+
+    val input = File(inputName).readLines()
+    val lines = mutableListOf&lt;String&gt;()
+    var maxlen = 0
+    for (line in input) {
+        if (line.betterIsEmpty())
+            lines.add(&quot;\n&quot;)
+        else {
+            val words = mutableListOf&lt;String&gt;()
+            for (w in line.split(' ')) if (w.isNotEmpty()) words.add(w)
+            val l = words.joinToString(separator = &quot; &quot;)
+            maxlen = max(maxlen, l.length)
+            lines.add(l)
+        }
+    }
+<span class="nc" id="L266">*/ TODO()</span>
+}
+
+/**
+ * Средняя (14 баллов)
+ *
+ * Во входном файле с именем inputName содержится некоторый текст (в том числе, и на русском языке).
+ *
+ * Вернуть ассоциативный массив, содержащий 20 наиболее часто встречающихся слов с их количеством.
+ * Если в тексте менее 20 различных слов, вернуть все слова.
+ * Вернуть ассоциативный массив с числом слов больше 20, если 20-е, 21-е, ..., последнее слова
+ * имеют одинаковое количество вхождений (см. также тест файла input/onegin.txt).
+ *
+ * Словом считается непрерывная последовательность из букв (кириллических,
+ * либо латинских, без знаков препинания и цифр).
+ * Цифры, пробелы, знаки препинания считаются разделителями слов:
+ * Привет, привет42, привет!!! -привет?!
+ * ^ В этой строчке слово привет встречается 4 раза.
+ *
+ * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
+ * Ключи в ассоциативном массиве должны быть в нижнем регистре.
+ *
+ */
+fun top20Words(inputName: String): Map&lt;String, Int&gt; {
+<span class="nc" id="L290">    val words = mutableListOf&lt;String&gt;()</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">    for (line in File(inputName).readLines()) {</span>
+<span class="nc" id="L292">        val splitLine = line.split(</span>
+<span class="nc" id="L293">            &quot; &quot;, &quot;,&quot;, &quot;!&quot;, &quot;?&quot;, &quot;.&quot;, &quot;-&quot;, &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;)&quot;, &quot;(&quot;, &quot;—&quot;,</span>
+<span class="nc" id="L294">            &quot;»&quot;, &quot;*&quot;, &quot;«&quot;, &quot;;&quot;, &quot;:&quot;, &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;[&quot;, &quot;]&quot;, &quot;{&quot;, &quot;}&quot;, &quot;%&quot;, &quot;\&quot;&quot;, &quot;/&quot;, &quot;+&quot;, &quot;=&quot;, &quot;_&quot;, &quot;~&quot;, &quot;\'&quot;, &quot;|&quot;</span>
+        )
+<span class="nc bnc" id="L296" title="All 8 branches missed.">        for (w in splitLine) if (w.isNotEmpty() &amp;&amp; w != &quot;\n&quot;) words.add(w.lowercase())</span>
+    }
+
+<span class="nc" id="L299">    var cons = mutableMapOf&lt;String, Int&gt;()</span>
+
+<span class="nc bnc" id="L301" title="All 2 branches missed.">    for (word in words)</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">        if (cons[word] == null)</span>
+<span class="nc" id="L303">            cons[word] = 1</span>
+        else
+<span class="nc" id="L305">            cons[word] = cons[word]!! + 1</span>
+<span class="nc" id="L306">    val tmp = cons.toList().sortedByDescending { (_, v) -&gt; v }.toMap()</span>
+<span class="nc" id="L307">    cons = tmp.toMutableMap()</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">    return if (tmp.keys.size &lt;= 20)</span>
+<span class="nc" id="L309">        tmp</span>
+    else {
+<span class="nc" id="L311">        val verytmp = cons.toList()[19].second</span>
+<span class="nc" id="L312">        val res = mutableMapOf&lt;String, Int&gt;()</span>
+<span class="nc bnc" id="L313" title="All 4 branches missed.">        for (key in tmp.keys) if (tmp[key]!! &gt;= verytmp) res[key] = tmp[key]!!</span>
+<span class="nc" id="L314">        res</span>
+    }
+}
+
+/**
+ * Средняя (14 баллов)
+ *
+ * Реализовать транслитерацию текста из входного файла в выходной файл посредством динамически задаваемых правил.
+
+ * Во входном файле с именем inputName содержится некоторый текст (в том числе, и на русском языке).
+ *
+ * В ассоциативном массиве dictionary содержится словарь, в котором некоторым символам
+ * ставится в соответствие строчка из символов, например
+ * mapOf('з' to &quot;zz&quot;, 'р' to &quot;r&quot;, 'д' to &quot;d&quot;, 'й' to &quot;y&quot;, 'М' to &quot;m&quot;, 'и' to &quot;yy&quot;, '!' to &quot;!!!&quot;)
+ *
+ * Необходимо вывести в итоговый файл с именем outputName
+ * содержимое текста с заменой всех символов из словаря на соответствующие им строки.
+ *
+ * При этом регистр символов в словаре должен игнорироваться,
+ * но при выводе символ в верхнем регистре отображается в строку, начинающуюся с символа в верхнем регистре.
+ *
+ * Пример.
+ * Входной текст: Здравствуй, мир!
+ *
+ * заменяется на
+ *
+ * Выходной текст: Zzdrавствуy, mир!!!
+ *
+ * Пример 2.
+ *
+ * Входной текст: Здравствуй, мир!
+ * Словарь: mapOf('з' to &quot;zZ&quot;, 'р' to &quot;r&quot;, 'д' to &quot;d&quot;, 'й' to &quot;y&quot;, 'М' to &quot;m&quot;, 'и' to &quot;YY&quot;, '!' to &quot;!!!&quot;)
+ *
+ * заменяется на
+ *
+ * Выходной текст: Zzdrавствуy, mир!!!
+ *
+ * Обратите внимание: данная функция не имеет возвращаемого значения
+ */
+fun transliterate(inputName: String, dictionary: Map&lt;Char, String&gt;, outputName: String) {
+<span class="nc" id="L354">    val dict = mutableMapOf&lt;Char, String&gt;()</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">    for ((k, v) in dictionary)</span>
+<span class="nc" id="L356">        dict[k.lowercase()[0]] = v.lowercase()</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">    for (line in File(inputName).readLines()) {</span>
+<span class="nc" id="L359">        val chars = mutableMapOf&lt;Pair&lt;Char, Int&gt;, Boolean&gt;()</span>
+        // Adding index to make sure every char is unique
+<span class="nc bnc" id="L361" title="All 4 branches missed.">        for (i in line.indices) chars[Pair(line[i], i)] = line[i].isUpperCase()</span>
+<span class="nc" id="L362">        val sb = StringBuilder()</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">        for ((ch, index) in chars.keys) {</span>
+<span class="nc bnc" id="L364" title="All 2 branches missed.">            if (ch.lowercase()[0] in dict.keys) {</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">                if (chars[(Pair(ch, index))]!!) {</span>
+<span class="nc" id="L366">                    val tmp = dict[ch.lowercase()[0]]</span>
+<span class="nc bnc" id="L367" title="All 4 branches missed.">                    if (tmp!!.isNotEmpty()) {</span>
+<span class="nc" id="L368">                        sb.append(tmp[0].uppercase())</span>
+<span class="nc bnc" id="L369" title="All 2 branches missed.">                        if (tmp.length &gt; 1) sb.append(tmp.substring(1).lowercase())</span>
+                    } else {
+<span class="nc" id="L371">                        sb.append(&quot;&quot;)</span>
+                    }
+                } else {
+<span class="nc" id="L374">                    sb.append(dict[ch.lowercase()[0]]!!.lowercase())</span>
+                }
+            } else {
+<span class="nc" id="L377">                sb.append(ch)</span>
+            }
+        }
+<span class="nc" id="L380">        writer.write(&quot;$sb&quot;)</span>
+<span class="nc" id="L381">        writer.newLine()</span>
+    }
+<span class="nc" id="L383">    writer.close()</span>
+<span class="nc" id="L384">}</span>
+
+fun checkLetters(str: String): Boolean {
+<span class="nc" id="L387">    var letters = setOf&lt;Char&gt;()</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">    for (ch in str) {</span>
+<span class="nc" id="L389">        val newLetters = letters</span>
+<span class="nc" id="L390">        letters = letters + ch</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">        if (newLetters == letters) return false</span>
+    }
+<span class="nc" id="L393">    return true</span>
+}
+
+/**
+ * Средняя (12 баллов)
+ *
+ * Во входном файле с именем inputName имеется словарь с одним словом в каждой строчке.
+ * Выбрать из данного словаря наиболее длинное слово,
+ * в котором все буквы разные, например: Неряшливость, Четырёхдюймовка.
+ * Вывести его в выходной файл с именем outputName.
+ * Если во входном файле имеется несколько слов с одинаковой длиной, в которых все буквы разные,
+ * в выходной файл следует вывести их все через запятую.
+ * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
+ *
+ * Пример входного файла:
+ * Карминовый
+ * Боязливый
+ * Некрасивый
+ * Остроумный
+ * БелогЛазый
+ * ФиолетОвый
+
+ * Соответствующий выходной файл:
+ * Карминовый, Некрасивый
+ *
+ * Обратите внимание: данная функция не имеет возвращаемого значения
+ */
+fun chooseLongestChaoticWord(inputName: String, outputName: String) {
+<span class="nc bnc" id="L421" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc" id="L422">    val words = File(inputName).readLines().toMutableList()</span>
+<span class="nc" id="L423">    val res = mutableListOf&lt;String&gt;()</span>
+<span class="nc" id="L424">    var maxLen = 0</span>
+<span class="nc bnc" id="L425" title="All 4 branches missed.">    for (word in words) if (checkLetters(word.lowercase())) maxLen = max(maxLen, word.length)</span>
+<span class="nc bnc" id="L426" title="All 2 branches missed.">    for (word in words) {</span>
+<span class="nc bnc" id="L427" title="All 4 branches missed.">        if (word.length == maxLen &amp;&amp; checkLetters(word.lowercase())) {</span>
+<span class="nc" id="L428">            res.add(word)</span>
+<span class="nc" id="L429">            maxLen = word.length</span>
+        }
+    }
+<span class="nc" id="L432">    writer.write(res.joinToString(separator = &quot;, &quot;))</span>
+<span class="nc" id="L433">    writer.close()</span>
+<span class="nc" id="L434">}</span>
+
+<span class="nc bnc" id="L436" title="All 10 branches missed.">fun String.isMarkdownEmpty(): Boolean = this.isEmpty() || this.all { it == ' ' || it == '\t' }</span>
+fun MutableList&lt;String&gt;.pop(): String {
+<span class="nc" id="L438">    val last = this.last()</span>
+<span class="nc" id="L439">    this.removeLast()</span>
+<span class="nc" id="L440">    return last</span>
+}
+
+/**
+ * Сложная (22 балла)
+ */
+fun markdownToHtmlSimple(inputName: String, outputName: String) {
+<span class="nc" id="L447">    val lines = File(inputName).readLines()</span>
+<span class="nc bnc" id="L448" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc" id="L449">    val input = mutableListOf&lt;String&gt;()</span>
+<span class="nc" id="L450">    val sb = StringBuilder()</span>
+<span class="nc" id="L451">    val stack = mutableListOf&lt;String&gt;()</span>
+
+<span class="nc" id="L453">    sb.append(&quot;&lt;html&gt;&lt;body&gt;&lt;p&gt;&quot;)</span>
+<span class="nc bnc" id="L454" title="All 8 branches missed.">    if (lines.isNotEmpty() &amp;&amp; !(lines.all { it.isMarkdownEmpty() })) {</span>
+<span class="nc" id="L455">        var k = 0</span>
+<span class="nc bnc" id="L456" title="All 4 branches missed.">        while (k &lt; lines.size &amp;&amp; lines[k].isMarkdownEmpty()) k++</span>
+<span class="nc bnc" id="L457" title="All 2 branches missed.">        while (k &lt; lines.size - 1) {</span>
+<span class="nc bnc" id="L458" title="All 4 branches missed.">            if (!(lines[k].isMarkdownEmpty() &amp;&amp; lines[k + 1].isMarkdownEmpty()))</span>
+<span class="nc" id="L459">                input.add(lines[k])</span>
+<span class="nc" id="L460">            k++</span>
+        }
+<span class="nc bnc" id="L462" title="All 2 branches missed.">        if (!(lines[k].isMarkdownEmpty())) input.add(lines[k])</span>
+<span class="nc bnc" id="L463" title="All 2 branches missed.">        for (line in input) {</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">            if (line.isMarkdownEmpty()) {</span>
+<span class="nc" id="L465">                sb.append(&quot;&lt;/p&gt;&lt;p&gt;&quot;)</span>
+<span class="nc" id="L466">                continue</span>
+            }
+<span class="nc" id="L468">            var i = 0</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">            while (i &lt; line.length) {</span>
+<span class="nc" id="L470">                when (line[i]) {</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">                    '~' -&gt; {</span>
+<span class="nc bnc" id="L472" title="All 4 branches missed.">                        if (i &lt; line.length - 1 &amp;&amp; line[i + 1] == '~') {</span>
+<span class="nc bnc" id="L473" title="All 2 branches missed.">                            if (&quot;~~&quot; in stack) {</span>
+<span class="nc" id="L474">                                stack.remove(&quot;~~&quot;)</span>
+<span class="nc" id="L475">                                sb.append(&quot;&lt;/s&gt;&quot;)</span>
+                            } else {
+<span class="nc" id="L477">                                stack.add(&quot;~~&quot;)</span>
+<span class="nc" id="L478">                                sb.append(&quot;&lt;s&gt;&quot;)</span>
+                            }
+<span class="nc" id="L480">                            i += 2</span>
+                        }
+                    }
+<span class="nc bnc" id="L483" title="All 2 branches missed.">                    '*' -&gt; {</span>
+<span class="nc bnc" id="L484" title="All 4 branches missed.">                        if (i &lt; line.length - 1 &amp;&amp; line[i + 1] == '*') {</span>
+<span class="nc bnc" id="L485" title="All 4 branches missed.">                            if (i &lt; line.length - 2 &amp;&amp; line[i + 2] == '*') {</span>
+<span class="nc" id="L486">                                i += 3</span>
+<span class="nc bnc" id="L487" title="All 2 branches missed.">                                if (&quot;*&quot; in stack) {</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">                                    if (&quot;**&quot; in stack) {</span>
+<span class="nc bnc" id="L489" title="All 2 branches missed.">                                        if (stack.indexOf(&quot;**&quot;) &gt; stack.indexOf(&quot;*&quot;))</span>
+<span class="nc" id="L490">                                            sb.append(&quot;&lt;/b&gt;&lt;/i&gt;&quot;)</span>
+                                        else
+<span class="nc" id="L492">                                            sb.append(&quot;&lt;/i&gt;&lt;/b&gt;&quot;)</span>
+<span class="nc" id="L493">                                        stack.remove(&quot;*&quot;)</span>
+<span class="nc" id="L494">                                        stack.remove(&quot;**&quot;)</span>
+                                    } else {
+<span class="nc" id="L496">                                        stack.remove(&quot;*&quot;)</span>
+<span class="nc" id="L497">                                        stack.add(&quot;**&quot;)</span>
+<span class="nc" id="L498">                                        sb.append(&quot;&lt;/i&gt;&lt;b&gt;&quot;) // &lt;--</span>
+                                    }
+<span class="nc bnc" id="L500" title="All 2 branches missed.">                                } else if (&quot;**&quot; in stack) {</span>
+<span class="nc" id="L501">                                    stack.remove(&quot;**&quot;)</span>
+<span class="nc" id="L502">                                    stack.add(&quot;*&quot;)</span>
+<span class="nc" id="L503">                                    sb.append(&quot;&lt;/b&gt;&lt;i&gt;&quot;)</span>
+                                } else {
+<span class="nc" id="L505">                                    stack.add(&quot;**&quot;)</span>
+<span class="nc" id="L506">                                    stack.add(&quot;*&quot;)</span>
+<span class="nc" id="L507">                                    sb.append(&quot;&lt;b&gt;&lt;i&gt;&quot;)</span>
+                                }
+                            } else {
+<span class="nc" id="L510">                                i += 2</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">                                if (&quot;**&quot; in stack) {</span>
+<span class="nc" id="L512">                                    stack.remove(&quot;**&quot;)</span>
+<span class="nc" id="L513">                                    sb.append(&quot;&lt;/b&gt;&quot;)</span>
+                                } else {
+<span class="nc" id="L515">                                    stack.add(&quot;**&quot;)</span>
+<span class="nc" id="L516">                                    sb.append(&quot;&lt;b&gt;&quot;)</span>
+                                }
+                            }
+                        } else {
+<span class="nc" id="L520">                            i++</span>
+<span class="nc bnc" id="L521" title="All 2 branches missed.">                            if (&quot;*&quot; in stack) {</span>
+<span class="nc" id="L522">                                stack.remove(&quot;*&quot;)</span>
+<span class="nc" id="L523">                                sb.append(&quot;&lt;/i&gt;&quot;)</span>
+                            } else {
+<span class="nc" id="L525">                                stack.add(&quot;*&quot;)</span>
+<span class="nc" id="L526">                                sb.append(&quot;&lt;i&gt;&quot;)</span>
+                            }
+                        }
+                    }
+                    else -&gt; {
+<span class="nc" id="L531">                        sb.append(line[i])</span>
+<span class="nc" id="L532">                        i++</span>
+                    }
+                }
+            }
+        }
+    }
+<span class="nc" id="L538">    sb.append(&quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;)</span>
+<span class="nc" id="L539">    writer.write(&quot;$sb&quot;)</span>
+<span class="nc" id="L540">    writer.close()</span>
+<span class="nc" id="L541">}</span>
+
+/**
+ * Сложная (23 балла)
+ */
+fun markdownToHtmlLists(inputName: String, outputName: String) {
+<span class="nc" id="L547">    val lines = File(inputName).readLines()</span>
+<span class="nc bnc" id="L548" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc" id="L549">    val sb = StringBuilder()</span>
+<span class="nc" id="L550">    sb.append(&quot;&lt;html&gt;&lt;body&gt;&lt;p&gt;&quot;)</span>
+<span class="nc bnc" id="L551" title="All 4 branches missed.">    if (lines.isNotEmpty()) {</span>
+<span class="nc" id="L552">        val digits = &quot;0123456789.&quot;</span>
+<span class="nc" id="L553">        val stack = mutableListOf&lt;String&gt;()</span>
+<span class="nc" id="L554">        var k = 0</span>
+<span class="nc bnc" id="L555" title="All 2 branches missed.">        stack.add(if (lines[0][k] == '*') &quot;ul&quot; else &quot;ol&quot;)</span>
+<span class="nc bnc" id="L556" title="All 6 branches missed.">        while (lines[0][k] in digits || lines[0][k] == ' ' || lines[0][k] == '*') k++</span>
+<span class="nc" id="L557">        sb.append(&quot;&lt;${stack.last()}&gt;&lt;li&gt;${lines[0].substring(k)}&quot;)</span>
+<span class="nc bnc" id="L558" title="All 4 branches missed.">        for (l in 1 until lines.size) {</span>
+<span class="nc" id="L559">            val line = lines[l]</span>
+<span class="nc bnc" id="L560" title="All 2 branches missed.">            if (line.isMarkdownEmpty()) continue</span>
+<span class="nc" id="L561">            var first = 0</span>
+<span class="nc bnc" id="L562" title="All 2 branches missed.">            while (line[first] == ' ') first++</span>
+<span class="nc bnc" id="L563" title="All 2 branches missed.">            if (first &gt; 4 * (stack.size - 1)) {</span>
+<span class="nc" id="L564">                stack.add(</span>
+<span class="nc" id="L565">                    when (line[first]) {</span>
+<span class="nc bnc" id="L566" title="All 2 branches missed.">                        '*' -&gt; {</span>
+<span class="nc" id="L567">                            sb.append(&quot;&lt;ul&gt;&quot;)</span>
+<span class="nc" id="L568">                            &quot;ul&quot;</span>
+                        }
+<span class="nc bnc" id="L570" title="All 2 branches missed.">                        in digits -&gt; {</span>
+<span class="nc" id="L571">                            sb.append(&quot;&lt;ol&gt;&quot;)</span>
+<span class="nc" id="L572">                            &quot;ol&quot;</span>
+                        }
+<span class="nc" id="L574">                        else -&gt; throw IllegalArgumentException(&quot;Bad line format in '$line' with ${line[first]}&quot;)</span>
+                    }
+                )
+<span class="nc bnc" id="L577" title="All 2 branches missed.">            } else if (first &lt; 4 * (stack.size - 1)) {</span>
+<span class="nc" id="L578">                sb.append(&quot;&lt;/li&gt;&lt;/${stack.pop()}&gt;&lt;/li&gt;&quot;)</span>
+            } else {
+<span class="nc" id="L580">                sb.append(&quot;&lt;/li&gt;&quot;)</span>
+            }
+<span class="nc bnc" id="L582" title="All 8 branches missed.">            while (line[first] in digits || line[first] == ' ' || line[first] == '.' || line[first] == '*') first++</span>
+<span class="nc" id="L583">            sb.append(&quot;&lt;li&gt;${line.substring(first)}&quot;)</span>
+        }
+<span class="nc bnc" id="L585" title="All 2 branches missed.">        while (stack.size != 0) {</span>
+<span class="nc" id="L586">            sb.append(&quot;&lt;/li&gt;&lt;/${stack.pop()}&gt;&quot;)</span>
+        }
+    }
+<span class="nc" id="L589">    sb.append(&quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;)</span>
+<span class="nc" id="L590">    writer.write(&quot;$sb&quot;)</span>
+<span class="nc" id="L591">    writer.close()</span>
+<span class="nc" id="L592">}</span>
+
+/**
+ * Очень сложная (30 баллов)
+ *
+ * Реализовать преобразования из двух предыдущих задач одновременно над одним и тем же файлом.
+ * Следует помнить, что:
+ * - Списки, отделённые друг от друга пустой строкой, являются разными и должны оказаться в разных параграфах выходного файла.
+ *
+ */
+fun markdownToHtml(inputName: String, outputName: String) {
+<span class="nc" id="L603">    val rawInput = File(inputName).readLines()</span>
+<span class="nc" id="L604">    val trimmedInput = mutableListOf&lt;String&gt;()</span>
+<span class="nc bnc" id="L605" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+
+<span class="nc" id="L607">    writer.write(&quot;&lt;html&gt;&lt;body&gt;&quot;)</span>
+<span class="nc bnc" id="L608" title="All 8 branches missed.">    if (rawInput.isNotEmpty() || !(rawInput.all { it.isMarkdownEmpty() })) {</span>
+<span class="nc" id="L609">        val sb = StringBuilder()</span>
+<span class="nc" id="L610">        val listStack = mutableListOf&lt;String&gt;()</span>
+<span class="nc" id="L611">        val textStack = mutableListOf&lt;String&gt;()</span>
+<span class="nc" id="L612">        val digits = &quot;0123456789&quot;</span>
+<span class="nc" id="L613">        var k = 0</span>
+
+<span class="nc bnc" id="L615" title="All 4 branches missed.">        while (k &lt; rawInput.size &amp;&amp; rawInput[k].isMarkdownEmpty()) k++</span>
+<span class="nc bnc" id="L616" title="All 2 branches missed.">        while (k &lt; rawInput.size - 1) {</span>
+<span class="nc bnc" id="L617" title="All 4 branches missed.">            if (!(rawInput[k].isMarkdownEmpty() &amp;&amp; rawInput[k + 1].isMarkdownEmpty()))</span>
+<span class="nc" id="L618">                trimmedInput.add(rawInput[k])</span>
+<span class="nc" id="L619">            k++</span>
+        }
+<span class="nc bnc" id="L621" title="All 2 branches missed.">        if (!(rawInput[k].isMarkdownEmpty()))</span>
+<span class="nc" id="L622">            trimmedInput.add(rawInput[k])</span>
+
+<span class="nc" id="L624">        sb.append(&quot;&lt;p&gt;&quot;)</span>
+<span class="nc bnc" id="L625" title="All 2 branches missed.">        for (line in trimmedInput) {</span>
+<span class="nc bnc" id="L626" title="All 2 branches missed.">            if (line.isMarkdownEmpty()) {</span>
+<span class="nc" id="L627">                sb.append(&quot;&lt;/p&gt;&lt;p&gt;&quot;)</span>
+<span class="nc" id="L628">                continue</span>
+            }
+<span class="nc" id="L630">            var i = 0</span>
+<span class="nc bnc" id="L631" title="All 2 branches missed.">            while (line[i] == ' ') i++</span>
+<span class="nc bnc" id="L632" title="All 2 branches missed.">            if (i % 4 == 0) {</span>
+<span class="nc bnc" id="L633" title="All 2 branches missed.">                if (i &gt; 4 * (listStack.size - 1)) {</span>
+<span class="nc" id="L634">                    when (line[i]) {</span>
+<span class="nc bnc" id="L635" title="All 2 branches missed.">                        '*' -&gt; {</span>
+<span class="nc" id="L636">                            sb.append(&quot;&lt;ul&gt;&lt;li&gt;&quot;)</span>
+<span class="nc" id="L637">                            listStack.add(&quot;ul&quot;)</span>
+                        }
+<span class="nc bnc" id="L639" title="All 2 branches missed.">                        in digits -&gt; {</span>
+<span class="nc" id="L640">                            sb.append(&quot;&lt;ol&gt;&lt;li&gt;&quot;)</span>
+<span class="nc" id="L641">                            listStack.add(&quot;ol&quot;)</span>
+                        }
+                        else -&gt; {
+<span class="nc" id="L644">                            i--</span>
+                        }
+                    }
+<span class="nc bnc" id="L647" title="All 2 branches missed.">                } else if (i &lt; 4 * (listStack.size - 1)) {</span>
+<span class="nc" id="L648">                    sb.append(&quot;&lt;/li&gt;&lt;/${listStack.pop()}&gt;&lt;/li&gt;&lt;li&gt;&quot;)</span>
+                } else {
+<span class="nc" id="L650">                    when (line[i]) {</span>
+<span class="nc bnc" id="L651" title="All 2 branches missed.">                        '*' -&gt; {</span>
+<span class="nc" id="L652">                            sb.append(&quot;&lt;/li&gt;&lt;li&gt;&quot;)</span>
+                        }
+<span class="nc bnc" id="L654" title="All 2 branches missed.">                        in digits -&gt; {</span>
+<span class="nc" id="L655">                            sb.append(&quot;&lt;/li&gt;&lt;li&gt;&quot;)</span>
+                        }
+                        else -&gt; {
+                            // pass
+                        }
+                    }
+                }
+            }
+<span class="nc" id="L663">            i++</span>
+<span class="nc bnc" id="L664" title="All 6 branches missed.">            while (line[i] in digits || line[i] == ' ' || line[i] == '.') i++</span>
+<span class="nc bnc" id="L665" title="All 2 branches missed.">            while (i &lt; line.length) {</span>
+<span class="nc" id="L666">                when (line[i]) {</span>
+<span class="nc bnc" id="L667" title="All 2 branches missed.">                    '~' -&gt; {</span>
+<span class="nc bnc" id="L668" title="All 4 branches missed.">                        if (i &lt; line.length - 1 &amp;&amp; line[i + 1] == '~') {</span>
+<span class="nc bnc" id="L669" title="All 2 branches missed.">                            if (&quot;~~&quot; in textStack) {</span>
+<span class="nc" id="L670">                                textStack.remove(&quot;~~&quot;)</span>
+<span class="nc" id="L671">                                sb.append(&quot;&lt;/s&gt;&quot;)</span>
+                            } else {
+<span class="nc" id="L673">                                textStack.add(&quot;~~&quot;)</span>
+<span class="nc" id="L674">                                sb.append(&quot;&lt;s&gt;&quot;)</span>
+                            }
+<span class="nc" id="L676">                            i += 2</span>
+                        }
+                    }
+<span class="nc bnc" id="L679" title="All 2 branches missed.">                    '*' -&gt; {</span>
+<span class="nc bnc" id="L680" title="All 4 branches missed.">                        if (i &lt; line.length - 1 &amp;&amp; line[i + 1] == '*') {</span>
+<span class="nc bnc" id="L681" title="All 4 branches missed.">                            if (i &lt; line.length - 2 &amp;&amp; line[i + 2] == '*') {</span>
+<span class="nc" id="L682">                                i += 3</span>
+<span class="nc bnc" id="L683" title="All 2 branches missed.">                                if (&quot;*&quot; in textStack) {</span>
+<span class="nc bnc" id="L684" title="All 2 branches missed.">                                    if (&quot;**&quot; in textStack) {</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">                                        if (textStack.indexOf(&quot;**&quot;) &gt; textStack.indexOf(&quot;*&quot;))</span>
+<span class="nc" id="L686">                                            sb.append(&quot;&lt;/b&gt;&lt;/i&gt;&quot;)</span>
+                                        else
+<span class="nc" id="L688">                                            sb.append(&quot;&lt;/i&gt;&lt;/b&gt;&quot;)</span>
+<span class="nc" id="L689">                                        textStack.remove(&quot;*&quot;)</span>
+<span class="nc" id="L690">                                        textStack.remove(&quot;**&quot;)</span>
+                                    } else {
+<span class="nc" id="L692">                                        textStack.remove(&quot;*&quot;)</span>
+<span class="nc" id="L693">                                        textStack.add(&quot;**&quot;)</span>
+<span class="nc" id="L694">                                        sb.append(&quot;&lt;/i&gt;&lt;b&gt;&quot;) // &lt;--</span>
+                                    }
+<span class="nc bnc" id="L696" title="All 2 branches missed.">                                } else if (&quot;**&quot; in textStack) {</span>
+<span class="nc" id="L697">                                    textStack.remove(&quot;**&quot;)</span>
+<span class="nc" id="L698">                                    textStack.add(&quot;*&quot;)</span>
+<span class="nc" id="L699">                                    sb.append(&quot;&lt;/b&gt;&lt;i&gt;&quot;)</span>
+                                } else {
+<span class="nc" id="L701">                                    textStack.add(&quot;**&quot;)</span>
+<span class="nc" id="L702">                                    textStack.add(&quot;*&quot;)</span>
+<span class="nc" id="L703">                                    sb.append(&quot;&lt;b&gt;&lt;i&gt;&quot;)</span>
+                                }
+                            } else {
+<span class="nc" id="L706">                                i += 2</span>
+<span class="nc bnc" id="L707" title="All 2 branches missed.">                                if (&quot;**&quot; in textStack) {</span>
+<span class="nc" id="L708">                                    textStack.remove(&quot;**&quot;)</span>
+<span class="nc" id="L709">                                    sb.append(&quot;&lt;/b&gt;&quot;)</span>
+                                } else {
+<span class="nc" id="L711">                                    textStack.add(&quot;**&quot;)</span>
+<span class="nc" id="L712">                                    sb.append(&quot;&lt;b&gt;&quot;)</span>
+                                }
+                            }
+                        } else {
+<span class="nc" id="L716">                            i++</span>
+<span class="nc bnc" id="L717" title="All 2 branches missed.">                            if (&quot;*&quot; in textStack) {</span>
+<span class="nc" id="L718">                                textStack.remove(&quot;*&quot;)</span>
+<span class="nc" id="L719">                                sb.append(&quot;&lt;/i&gt;&quot;)</span>
+                            } else {
+<span class="nc" id="L721">                                textStack.add(&quot;*&quot;)</span>
+<span class="nc" id="L722">                                sb.append(&quot;&lt;i&gt;&quot;)</span>
+                            }
+                        }
+                    }
+                    else -&gt; {
+<span class="nc" id="L727">                        sb.append(line[i])</span>
+<span class="nc" id="L728">                        i++</span>
+                    }
+                }
+            }
+        }
+<span class="nc bnc" id="L733" title="All 2 branches missed.">        while (listStack.size != 0) {</span>
+<span class="nc" id="L734">            sb.append(&quot;&lt;/li&gt;&lt;/${listStack.pop()}&gt;&quot;)</span>
+        }
+<span class="nc" id="L736">        sb.append(&quot;&lt;/p&gt;&quot;)</span>
+<span class="nc" id="L737">        writer.write(&quot;$sb&quot;)</span>
+    }
+<span class="nc" id="L739">    writer.write(&quot;&lt;/body&gt;&lt;/html&gt;&quot;)</span>
+<span class="nc" id="L740">    writer.close()</span>
+<span class="nc" id="L741">}</span>
+
+/**
+ * Средняя (12 баллов)
+ *
+ * Вывести в выходной файл процесс умножения столбиком числа lhv (&gt; 0) на число rhv (&gt; 0).
+ *
+ * Пример (для lhv == 19935, rhv == 111):
+19935
+ *    111
+--------
+19935
++ 19935
++19935
+--------
+2212785
+ * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
+ * Нули в множителе обрабатывать так же, как и остальные цифры:
+235
+ *  10
+-----
+0
++235
+-----
+2350
+ *
+ */
+fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
+<span class="nc bnc" id="L769" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc" id="L770">    val res = rhv * lhv</span>
+<span class="nc" id="L771">    val sumWidth = (&quot;$res&quot;).length + 1</span>
+<span class="nc" id="L772">    writer.write(&quot; &quot;.repeat(sumWidth - &quot;$lhv&quot;.length))</span>
+<span class="nc" id="L773">    writer.write(&quot;$lhv\n&quot;)</span>
+<span class="nc" id="L774">    writer.write(&quot;*&quot;)</span>
+<span class="nc" id="L775">    writer.write(&quot; &quot;.repeat(sumWidth - 1 - &quot;$rhv&quot;.length))</span>
+<span class="nc" id="L776">    writer.write(&quot;$rhv\n&quot;)</span>
+<span class="nc" id="L777">    writer.write(&quot;-&quot;.repeat(sumWidth))</span>
+<span class="nc" id="L778">    writer.newLine()</span>
+<span class="nc" id="L779">    val rhvDigits = convert(rhv, 10)</span>
+<span class="nc" id="L780">    var i = rhvDigits.size - 1</span>
+<span class="nc" id="L781">    var curNum = lhv * rhvDigits[i]</span>
+<span class="nc" id="L782">    writer.write(&quot; &quot;.repeat(sumWidth - &quot;$curNum&quot;.length))</span>
+<span class="nc" id="L783">    writer.write(&quot;$curNum\n&quot;)</span>
+<span class="nc" id="L784">    i--</span>
+<span class="nc bnc" id="L785" title="All 2 branches missed.">    while (i != -1) {</span>
+<span class="nc" id="L786">        writer.write(&quot;+&quot;)</span>
+<span class="nc" id="L787">        curNum = lhv * rhvDigits[i]</span>
+<span class="nc" id="L788">        writer.write(&quot; &quot;.repeat(sumWidth + i - rhvDigits.size - &quot;$curNum&quot;.length))</span>
+<span class="nc" id="L789">        writer.write(&quot;$curNum&quot;)</span>
+<span class="nc" id="L790">        writer.newLine()</span>
+<span class="nc" id="L791">        i--</span>
+    }
+<span class="nc" id="L793">    writer.write(&quot;-&quot;.repeat(sumWidth))</span>
+<span class="nc" id="L794">    writer.newLine()</span>
+<span class="nc" id="L795">    writer.write(&quot; &quot;)</span>
+<span class="nc" id="L796">    writer.write(&quot;$res&quot;)</span>
+<span class="nc" id="L797">    writer.close()</span>
+<span class="nc" id="L798">}</span>
+
+
+/**
+ * Сложная (25 баллов)
+ *
+ * Вывести в выходной файл процесс деления столбиком числа lhv (&gt; 0) на число rhv (&gt; 0).
+ *
+ * Пример (для lhv == 19935, rhv == 22):
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
+
+ * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
+ *
+ */
+fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
+<span class="nc" id="L822">    val sb = StringBuilder()</span>
+<span class="nc" id="L823">    val res = lhv / rhv</span>
+<span class="nc" id="L824">    val digits = convert(lhv, 10)</span>
+<span class="nc" id="L825">    var i = 0</span>
+<span class="nc" id="L826">    var num = 0</span>
+<span class="nc bnc" id="L827" title="All 4 branches missed.">    while (num / rhv == 0 &amp;&amp; i &lt; digits.size) {</span>
+<span class="nc" id="L828">        num *= 10</span>
+<span class="nc" id="L829">        num += digits[i]</span>
+<span class="nc" id="L830">        i++</span>
+    }
+<span class="nc" id="L832">    var tmp = num / rhv * rhv</span>
+<span class="nc" id="L833">    val n = num.toString().length - (tmp.toString().length + 1)</span>
+<span class="nc bnc" id="L834" title="All 2 branches missed.">    val t = &quot;${if (n &lt; 0) &quot; &quot; else &quot;&quot;}$lhv | $rhv\n&quot;</span>
+<span class="nc" id="L835">    val maxlen = t.substringBefore('|').length - 1</span>
+<span class="nc" id="L836">    sb.append(t)</span>
+<span class="nc" id="L837">    sb.append(</span>
+<span class="nc" id="L838">        &quot;${&quot; &quot;.repeat(max(n, 0))}-${tmp}${&quot; &quot;.repeat(3 + digits.size - num.toString().length)}$res\n&quot;</span>
+    )
+<span class="nc" id="L840">    var dashes = max(num.toString().length, tmp.toString().length + 1)</span>
+<span class="nc" id="L841">    sb.append(&quot;${&quot;-&quot;.repeat(dashes)}\n&quot;)</span>
+<span class="nc" id="L842">    var rightIndent = digits.size - i</span>
+<span class="nc bnc" id="L843" title="All 2 branches missed.">    while (i &lt; digits.size) {</span>
+<span class="nc" id="L844">        num -= tmp</span>
+<span class="nc bnc" id="L845" title="All 2 branches missed.">        val hasZero = if (num == 0) 1 else 0</span>
+<span class="nc" id="L846">        num *= 10</span>
+<span class="nc" id="L847">        num += digits[i++]</span>
+<span class="nc" id="L848">        rightIndent--</span>
+<span class="nc" id="L849">        tmp = num / rhv * rhv</span>
+<span class="nc" id="L850">        dashes = max(num.toString().length + hasZero, tmp.toString().length + 1)</span>
+<span class="nc" id="L851">        sb.append(</span>
+<span class="nc bnc" id="L852" title="All 2 branches missed.">            &quot;${&quot; &quot;.repeat(maxlen - num.toString().length - rightIndent - hasZero)}${if (hasZero == 1) &quot;0&quot; else &quot;&quot;}$num\n&quot;</span>
+        )
+<span class="nc" id="L854">        sb.append(&quot;${&quot; &quot;.repeat(maxlen - tmp.toString().length - rightIndent - 1)}-$tmp\n&quot;)</span>
+<span class="nc" id="L855">        sb.append(&quot;${&quot; &quot;.repeat(maxlen - dashes - rightIndent)}${&quot;-&quot;.repeat(dashes)}\n&quot;)</span>
+    }
+<span class="nc" id="L857">    sb.append(&quot;${&quot; &quot;.repeat(maxlen - (lhv % rhv).toString().length)}${lhv % rhv}&quot;)</span>
+<span class="nc bnc" id="L858" title="All 2 branches missed.">    val writer = File(outputName).bufferedWriter()</span>
+<span class="nc" id="L859">    writer.write(&quot;$sb&quot;)</span>
+<span class="nc" id="L860">    writer.close()</span>
+<span class="nc" id="L861">}</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

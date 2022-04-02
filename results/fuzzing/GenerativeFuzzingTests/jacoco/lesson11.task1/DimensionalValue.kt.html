@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DimensionalValue.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson11.task1</a> &gt; <span class="el_source">DimensionalValue.kt</span></div><h1>DimensionalValue.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson11.task1
+
+/**
+ * Класс &quot;Величина с размерностью&quot;.
+ *
+ * Предназначен для представления величин вроде &quot;6 метров&quot; или &quot;3 килограмма&quot;
+ * Общая сложность задания - средняя, общая ценность в баллах -- 18
+ * Величины с размерностью можно складывать, вычитать, делить, менять им знак.
+ * Их также можно умножать и делить на число.
+ *
+ * В конструктор передаётся вещественное значение и строковая размерность.
+ * Строковая размерность может:
+ * - либо строго соответствовать одной из abbreviation класса Dimension (m, g)
+ * - либо соответствовать одной из приставок, к которой приписана сама размерность (Km, Kg, mm, mg)
+ * - во всех остальных случаях следует бросить IllegalArgumentException
+ */
+<span class="nc" id="L19">class DimensionalValue(value: Double, dimension: String) : Comparable&lt;DimensionalValue&gt; {</span>
+    /**
+     * Величина с БАЗОВОЙ размерностью (например для 1.0Kg следует вернуть результат в граммах -- 1000.0)
+     */
+<span class="nc" id="L23">    val value: Double</span>
+
+    /**
+     * БАЗОВАЯ размерность (опять-таки для 1.0Kg следует вернуть GRAM)
+     */
+<span class="nc" id="L28">    val dimension: Dimension</span>
+
+<span class="nc" id="L30">    init {</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (dimension.length == 1) {</span>
+<span class="nc" id="L32">            this.value = value</span>
+<span class="nc" id="L33">            this.dimension = when (dimension) {</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">                &quot;g&quot; -&gt; Dimension.GRAM</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">                &quot;m&quot; -&gt; Dimension.METER</span>
+<span class="nc" id="L36">                else -&gt; throw IllegalArgumentException(&quot;'$dimension' is not supported&quot;)</span>
+            }
+        } else {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (dimension.length != 2) throw IllegalArgumentException(&quot;'$dimension' is not supported&quot;)</span>
+<span class="nc" id="L40">            val c = when (dimension[0]) {</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">                'K' -&gt; DimensionPrefix.KILO</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">                'm' -&gt; DimensionPrefix.MILLI</span>
+<span class="nc" id="L43">                else -&gt; throw IllegalArgumentException(&quot;'$dimension' is not supported&quot;)</span>
+            }
+<span class="nc" id="L45">            this.value = value * c.multiplier</span>
+<span class="nc" id="L46">            this.dimension = when (dimension[1]) {</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">                'g' -&gt; Dimension.GRAM</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">                'm' -&gt; Dimension.METER</span>
+<span class="nc" id="L49">                else -&gt; throw IllegalArgumentException(&quot;'$dimension' is not supported&quot;)</span>
+            }
+        }
+<span class="nc" id="L52">    }</span>
+
+    /**
+     * Конструктор из строки. Формат строки: значение пробел размерность (1 Kg, 3 mm, 100 g и так далее).
+     */
+<span class="nc" id="L57">    constructor(s: String) : this(s.split(&quot; &quot;)[0].toDouble(), s.split(&quot; &quot;)[1])</span>
+
+    /**
+     * Сложение с другой величиной. Если базовая размерность разная, бросить IllegalArgumentException
+     * (нельзя складывать метры и килограммы)
+     */
+    operator fun plus(other: DimensionalValue): DimensionalValue =
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (this.dimension != other.dimension) throw IllegalArgumentException(&quot;Different dimensions&quot;)</span>
+<span class="nc" id="L65">        else DimensionalValue(this.value + other.value, this.dimension.abbreviation)</span>
+
+    /**
+     * Смена знака величины
+     */
+<span class="nc" id="L70">    operator fun unaryMinus(): DimensionalValue = DimensionalValue(-this.value, this.dimension.abbreviation)</span>
+
+    /**
+     * Вычитание другой величины. Если базовая размерность разная, бросить IllegalArgumentException
+     */
+<span class="nc" id="L75">    operator fun minus(other: DimensionalValue): DimensionalValue = this + (-other)</span>
+
+    /**
+     * Умножение на число
+     */
+    operator fun times(other: Double): DimensionalValue =
+<span class="nc" id="L81">        DimensionalValue(this.value * other, this.dimension.abbreviation)</span>
+
+    /**
+     * Деление на число
+     */
+    operator fun div(other: Double): DimensionalValue =
+<span class="nc" id="L87">        DimensionalValue(this.value / other, this.dimension.abbreviation)</span>
+
+    /**
+     * Деление на другую величину. Если базовая размерность разная, бросить IllegalArgumentException
+     */
+    operator fun div(other: DimensionalValue): Double =
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (this.dimension != other.dimension) throw IllegalArgumentException(&quot;Different dimensions&quot;)</span>
+<span class="nc" id="L94">        else this.value / other.value</span>
+
+    /**
+     * Сравнение на равенство
+     */
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    override fun equals(other: Any?): Boolean = other is DimensionalValue &amp;&amp;</span>
+<span class="nc bnc" id="L100" title="All 6 branches missed.">            this.dimension == other.dimension &amp;&amp; this.value == other.value</span>
+
+    /**
+     * Сравнение на больше/меньше. Если базовая размерность разная, бросить IllegalArgumentException
+     */
+    override fun compareTo(other: DimensionalValue): Int =
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (this.dimension != other.dimension) throw IllegalArgumentException(&quot;Different dimensions&quot;)</span>
+<span class="nc" id="L107">        else when {</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            this.value &lt; other.value -&gt; -1</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            this.value &gt; other.value -&gt; 1</span>
+<span class="nc" id="L110">            else -&gt; 0</span>
+<span class="nc" id="L111">        }</span>
+
+    override fun hashCode(): Int {
+<span class="nc" id="L114">        var result = value.hashCode()</span>
+<span class="nc" id="L115">        result = 31 * result + dimension.hashCode()</span>
+<span class="nc" id="L116">        return result</span>
+    }
+}
+
+/**
+ * Размерность. В этот класс можно добавлять новые варианты (секунды, амперы, прочие), но нельзя убирать
+ */
+<span class="nc" id="L123">enum class Dimension(val abbreviation: String) {</span>
+<span class="nc" id="L124">    METER(&quot;m&quot;),</span>
+<span class="nc" id="L125">    GRAM(&quot;g&quot;);</span>
+}
+
+/**
+ * Приставка размерности. Опять-таки можно добавить новые варианты (деци-, санти-, мега-, ...), но нельзя убирать
+ */
+<span class="nc" id="L131">enum class DimensionPrefix(val abbreviation: String, val multiplier: Double) {</span>
+<span class="nc" id="L132">    KILO(&quot;K&quot;, 1000.0),</span>
+<span class="nc" id="L133">    MILLI(&quot;m&quot;, 0.001);</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

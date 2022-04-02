@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnsignedBigInteger.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson11.task1</a> &gt; <span class="el_source">UnsignedBigInteger.kt</span></div><h1>UnsignedBigInteger.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson11.task1
+
+/**
+ * Класс &quot;беззнаковое большое целое число&quot;.
+ *
+ * Общая сложность задания -- очень сложная, общая ценность в баллах -- 32.
+ * Объект класса содержит целое число без знака произвольного размера
+ * и поддерживает основные операции над такими числами, а именно:
+ * сложение, вычитание (при вычитании большего числа из меньшего бросается исключение),
+ * умножение, деление, остаток от деления,
+ * преобразование в строку/из строки, преобразование в целое/из целого,
+ * сравнение на равенство и неравенство
+ */
+class UnsignedBigInteger : Comparable&lt;UnsignedBigInteger&gt; {
+
+    /**
+     * Конструктор из строки
+     */
+<span class="nc" id="L21">    constructor(s: String) {</span>
+<span class="nc" id="L22">        TODO()</span>
+    }
+
+    /**
+     * Конструктор из целого
+     */
+<span class="nc" id="L28">    constructor(i: Int) {</span>
+<span class="nc" id="L29">        TODO()</span>
+    }
+
+    /**
+     * Сложение
+     */
+<span class="nc" id="L35">    operator fun plus(other: UnsignedBigInteger): UnsignedBigInteger = TODO()</span>
+
+    /**
+     * Вычитание (бросить ArithmeticException, если this &lt; other)
+     */
+<span class="nc" id="L40">    operator fun minus(other: UnsignedBigInteger): UnsignedBigInteger = TODO()</span>
+
+    /**
+     * Умножение
+     */
+<span class="nc" id="L45">    operator fun times(other: UnsignedBigInteger): UnsignedBigInteger = TODO()</span>
+
+    /**
+     * Деление
+     */
+<span class="nc" id="L50">    operator fun div(other: UnsignedBigInteger): UnsignedBigInteger = TODO()</span>
+
+    /**
+     * Взятие остатка
+     */
+<span class="nc" id="L55">    operator fun rem(other: UnsignedBigInteger): UnsignedBigInteger = TODO()</span>
+
+    /**
+     * Сравнение на равенство (по контракту Any.equals)
+     */
+<span class="nc" id="L60">    override fun equals(other: Any?): Boolean = TODO()</span>
+
+    /**
+     * Сравнение на больше/меньше (по контракту Comparable.compareTo)
+     */
+<span class="nc" id="L65">    override fun compareTo(other: UnsignedBigInteger): Int = TODO()</span>
+
+    /**
+     * Преобразование в строку
+     */
+<span class="nc" id="L70">    override fun toString(): String = TODO()</span>
+
+    /**
+     * Преобразование в целое
+     * Если число не влезает в диапазон Int, бросить ArithmeticException
+     */
+<span class="nc" id="L76">    fun toInt(): Int = TODO()</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Parse.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson6.task1</a> &gt; <span class="el_source">Parse.kt</span></div><h1>Parse.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;, &quot;ConvertCallChainIntoSequence&quot;)
+
+package lesson6.task1
+
+import lesson2.task2.daysInMonth
+import kotlin.NumberFormatException
+import kotlin.math.max
+
+// Урок 6: разбор строк, исключения
+// Максимальное количество баллов = 13
+// Рекомендуемое количество баллов = 11
+// Вместе с предыдущими уроками (пять лучших, 2-6) = 40/54
+
+/**
+ * Пример
+ *
+ * Время представлено строкой вида &quot;11:34:45&quot;, содержащей часы, минуты и секунды, разделённые двоеточием.
+ * Разобрать эту строку и рассчитать количество секунд, прошедшее с начала дня.
+ */
+fun timeStrToSeconds(str: String): Int {
+<span class="nc" id="L21">    val parts = str.split(&quot;:&quot;)</span>
+<span class="nc" id="L22">    var result = 0</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">    for (part in parts) {</span>
+<span class="nc" id="L24">        val number = part.toInt()</span>
+<span class="nc" id="L25">        result = result * 60 + number</span>
+    }
+<span class="nc" id="L27">    return result</span>
+}
+
+/**
+ * Пример
+ *
+ * Дано число n от 0 до 99.
+ * Вернуть его же в виде двухсимвольной строки, от &quot;00&quot; до &quot;99&quot;
+ */
+<span class="nc bnc" id="L36" title="All 6 branches missed.">fun twoDigitStr(n: Int) = if (n in 0..9) &quot;0$n&quot; else &quot;$n&quot;</span>
+
+/**
+ * Пример
+ *
+ * Дано seconds -- время в секундах, прошедшее с начала дня.
+ * Вернуть текущее время в виде строки в формате &quot;ЧЧ:ММ:СС&quot;.
+ */
+fun timeSecondsToStr(seconds: Int): String {
+<span class="nc" id="L45">    val hour = seconds / 3600</span>
+<span class="nc" id="L46">    val minute = (seconds % 3600) / 60</span>
+<span class="nc" id="L47">    val second = seconds % 60</span>
+<span class="nc" id="L48">    return String.format(&quot;%02d:%02d:%02d&quot;, hour, minute, second)</span>
+}
+
+/**
+ * Средняя (4 балла)
+ *
+ * Дата представлена строкой вида &quot;15 июля 2016&quot;.
+ * Перевести её в цифровой формат &quot;15.07.2016&quot;.
+ * День и месяц всегда представлять двумя цифрами, например: 03.04.2011.
+ * При неверном формате входной строки вернуть пустую строку.
+ *
+ * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
+ * входными данными.
+ */
+fun dateStrToDigit(str: String): String {
+<span class="nc" id="L63">    val parts = str.split(&quot; &quot;)</span>
+<span class="nc" id="L64">    val preres = mutableListOf&lt;Int&gt;()</span>
+<span class="nc" id="L65">    var res = &quot;&quot;</span>
+<span class="nc" id="L66">    val months = listOf(</span>
+<span class="nc" id="L67">        &quot;января&quot;,</span>
+<span class="nc" id="L68">        &quot;февраля&quot;,</span>
+<span class="nc" id="L69">        &quot;марта&quot;,</span>
+<span class="nc" id="L70">        &quot;апреля&quot;,</span>
+<span class="nc" id="L71">        &quot;мая&quot;,</span>
+<span class="nc" id="L72">        &quot;июня&quot;,</span>
+<span class="nc" id="L73">        &quot;июля&quot;,</span>
+<span class="nc" id="L74">        &quot;августа&quot;,</span>
+<span class="nc" id="L75">        &quot;сентября&quot;,</span>
+<span class="nc" id="L76">        &quot;октября&quot;,</span>
+<span class="nc" id="L77">        &quot;ноября&quot;,</span>
+<span class="nc" id="L78">        &quot;декабря&quot;</span>
+    )
+    // check input
+<span class="nc bnc" id="L81" title="All 4 branches missed.">    if (parts.size != 3 || parts[1] !in months) return res</span>
+<span class="nc" id="L82">    preres += parts[0].toInt()</span>
+<span class="nc bnc" id="L83" title="All 6 branches missed.">    for (i in months.indices) if (parts[1] == months[i]) preres += i + 1</span>
+<span class="nc" id="L84">    preres += parts[2].toInt()</span>
+    // check logic
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    if (preres[0] &gt; daysInMonth(preres[1], preres[2])) return res</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">    if (preres[0] &lt; 10) res += &quot;0&quot;</span>
+<span class="nc" id="L88">    res += preres[0].toString() + &quot;.&quot;</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">    if (preres[1] &lt; 10) res += &quot;0&quot;</span>
+<span class="nc" id="L90">    res += preres[1].toString() + &quot;.&quot;</span>
+<span class="nc" id="L91">    res += preres[2].toString()</span>
+<span class="nc" id="L92">    return res</span>
+}
+
+/**
+ * Средняя (4 балла)
+ *
+ * Дата представлена строкой вида &quot;15.07.2016&quot;.
+ * Перевести её в строковый формат вида &quot;15 июля 2016&quot;.
+ * При неверном формате входной строки вернуть пустую строку
+ *
+ * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
+ * входными данными.
+ */
+fun dateDigitToStr(digital: String): String {
+<span class="nc" id="L106">    val parts = digital.split(&quot;.&quot;)</span>
+    // check input
+<span class="nc bnc" id="L108" title="All 2 branches missed.">    if (parts.size != 3) return &quot;&quot;</span>
+<span class="nc" id="L109">    try {</span>
+<span class="nc" id="L110">        val partsInt = mutableListOf&lt;Int&gt;()</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        for (i in parts) partsInt += i.toInt()</span>
+        // check logic
+<span class="nc bnc" id="L114" title="All 8 branches missed.">        if (partsInt[0] &gt; 31 || partsInt[1] &gt; 12 || partsInt[1] &lt; 1 || partsInt[0] &gt; daysInMonth(</span>
+<span class="nc" id="L115">                partsInt[1],</span>
+<span class="nc" id="L116">                partsInt[2]</span>
+            )
+        )
+<span class="nc" id="L119">            return &quot;&quot;</span>
+<span class="nc" id="L120">        val months = listOf(</span>
+<span class="nc" id="L121">            &quot;января&quot;,</span>
+<span class="nc" id="L122">            &quot;февраля&quot;,</span>
+<span class="nc" id="L123">            &quot;марта&quot;,</span>
+<span class="nc" id="L124">            &quot;апреля&quot;,</span>
+<span class="nc" id="L125">            &quot;мая&quot;,</span>
+<span class="nc" id="L126">            &quot;июня&quot;,</span>
+<span class="nc" id="L127">            &quot;июля&quot;,</span>
+<span class="nc" id="L128">            &quot;августа&quot;,</span>
+<span class="nc" id="L129">            &quot;сентября&quot;,</span>
+<span class="nc" id="L130">            &quot;октября&quot;,</span>
+<span class="nc" id="L131">            &quot;ноября&quot;,</span>
+<span class="nc" id="L132">            &quot;декабря&quot;</span>
+        )
+<span class="nc" id="L134">        return partsInt[0].toString() + &quot; &quot; + months[partsInt[1] - 1] + &quot; &quot; + parts[2]</span>
+<span class="nc" id="L135">    } catch (e: NumberFormatException) {</span>
+<span class="nc" id="L136">        return &quot;&quot;</span>
+    }
+}
+
+/**
+ * Средняя (4 балла)
+ *
+ * Номер телефона задан строкой вида &quot;+7 (921) 123-45-67&quot;.
+ * Префикс (+7) может отсутствовать, код города (в скобках) также может отсутствовать.
+ * Может присутствовать неограниченное количество пробелов и чёрточек,
+ * например, номер 12 --  34- 5 -- 67 -89 тоже следует считать легальным.
+ * Перевести номер в формат без скобок, пробелов и чёрточек (но с +), например,
+ * &quot;+79211234567&quot; или &quot;123456789&quot; для приведённых примеров.
+ * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
+ * При неверном формате вернуть пустую строку.
+ *
+ * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
+ */
+fun flattenPhoneNumber(phone: String): String {
+<span class="nc" id="L155">    var res = &quot;&quot;</span>
+<span class="nc" id="L156">    var addPlus = true</span>
+<span class="nc" id="L157">    var i = 0</span>
+<span class="nc" id="L158">    val ok = &quot; +-()&quot;</span>
+<span class="nc" id="L159">    val digs = &quot;0123456789&quot;</span>
+<span class="nc" id="L160">    var flag = false</span>
+
+<span class="nc bnc" id="L162" title="All 4 branches missed.">    if ('(' in phone &amp;&amp; ')' in phone) {</span>
+<span class="nc" id="L163">        var s = phone.substringBefore(')')</span>
+<span class="nc" id="L164">        s = s.substringAfter('(')</span>
+<span class="nc" id="L165">        flag = false</span>
+<span class="nc bnc" id="L166" title="All 4 branches missed.">        for (j in s) if (j in digs) flag = true</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (!flag) return &quot;&quot;</span>
+    }
+<span class="nc bnc" id="L169" title="All 4 branches missed.">    for (ch in digs) if (ch in phone) {</span>
+<span class="nc" id="L170">        flag = true</span>
+<span class="nc" id="L171">        break</span>
+    }
+<span class="nc bnc" id="L173" title="All 2 branches missed.">    if (!flag) return &quot;&quot;</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">    while (i != phone.length) {</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (phone[i] !in (ok + digs)) return &quot;&quot;</span>
+<span class="nc bnc" id="L176" title="All 4 branches missed.">        if (phone[i] == '+' &amp;&amp; addPlus) {</span>
+<span class="nc" id="L177">            res += '+'</span>
+<span class="nc" id="L178">            addPlus = false</span>
+        }
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (phone[i] in digs) res += phone[i]</span>
+<span class="nc" id="L181">        i++</span>
+    }
+<span class="nc" id="L183">    return res</span>
+}
+
+/**
+ * Средняя (5 баллов)
+ *
+ * Результаты спортсмена на соревнованиях в прыжках в длину представлены строкой вида
+ * &quot;706 - % 717 % 703&quot;.
+ * В строке могут присутствовать числа, черточки - и знаки процента %, разделённые пробелами;
+ * число соответствует удачному прыжку, - пропущенной попытке, % заступу.
+ * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
+ * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
+ */
+fun bestLongJump(jumps: String): Int {
+<span class="nc" id="L197">    val attempts = jumps.split(&quot; &quot;)</span>
+<span class="nc" id="L198">    var maxJump = -1</span>
+<span class="nc" id="L199">    val ok = &quot;-%0123456789&quot;</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">    for (attempt in attempts) {</span>
+<span class="nc bnc" id="L201" title="All 4 branches missed.">        if (attempt.length == 1 &amp;&amp; attempt !in ok) return -1</span>
+<span class="nc" id="L202">        try {</span>
+<span class="nc" id="L203">            maxJump = max(maxJump, attempt.toInt())</span>
+<span class="nc" id="L204">        } catch (e: NumberFormatException) {</span>
+<span class="nc" id="L205">            continue</span>
+        }
+    }
+<span class="nc" id="L208">    return maxJump</span>
+}
+
+
+fun checkIfNotOk(str: String): Boolean {
+<span class="nc" id="L213">    val ok = &quot;+-%&quot;</span>
+<span class="nc bnc" id="L214" title="All 4 branches missed.">    for (ch in str) if (ch !in ok) return true</span>
+<span class="nc" id="L215">    return false</span>
+}
+
+/**
+ * Сложная (6 баллов)
+ *
+ * Результаты спортсмена на соревнованиях в прыжках в высоту представлены строкой вида
+ * &quot;220 + 224 %+ 228 %- 230 + 232 %%- 234 %&quot;.
+ * Здесь + соответствует удачной попытке, % неудачной, - пропущенной.
+ * Высота и соответствующие ей попытки разделяются пробелом.
+ * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
+ * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
+ * вернуть -1.
+ */
+fun bestHighJump(jumps: String): Int {
+<span class="nc" id="L230">    val attempts = mutableMapOf&lt;Int, String&gt;()</span>
+<span class="nc" id="L231">    val tmp = jumps.split(&quot; &quot;)</span>
+<span class="nc bnc" id="L232" title="All 4 branches missed.">    for (i in 0..(tmp.size - 2) step 2) {</span>
+<span class="nc" id="L233">        try {</span>
+<span class="nc" id="L234">            attempts[tmp[i].toInt()] = tmp[i + 1]</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">            if (checkIfNotOk(tmp[i + 1])) return -1</span>
+<span class="nc" id="L236">        } catch (e: NumberFormatException) {</span>
+<span class="nc" id="L237">            return -1</span>
+        }
+    }
+<span class="nc" id="L240">    var maxJump = -1</span>
+<span class="nc bnc" id="L241" title="All 4 branches missed.">    for (j in attempts.keys) if (attempts[j]!![attempts[j]!!.length - 1] == '+') maxJump = max(maxJump, j)</span>
+
+<span class="nc" id="L243">    return maxJump</span>
+}
+
+fun safeToInt(s: String): Int {
+<span class="fc" id="L247">    val ok = &quot;0123456789&quot;</span>
+<span class="fc bfc" id="L248" title="All 4 branches covered.">    for (i in s) if (i !in ok) throw IllegalArgumentException(&quot;Bad operation&quot;)</span>
+<span class="fc" id="L249">    return s.toInt()</span>
+}
+
+/**
+ * Сложная (6 баллов)
+ *
+ * В строке представлено выражение вида &quot;2 + 31 - 40 + 13&quot;,
+ * использующее целые положительные числа, плюсы и минусы, разделённые пробелами.
+ * Наличие двух знаков подряд &quot;13 + + 10&quot; или двух чисел подряд &quot;1 2&quot; не допускается.
+ * Вернуть значение выражения (6 для примера).
+ * Про нарушении формата входной строки бросить исключение IllegalArgumentException
+ */
+fun plusMinus(expression: String): Int {
+<span class="fc bfc" id="L262" title="All 4 branches covered.">    if (expression.isEmpty()) throw IllegalArgumentException(&quot;Empty expression&quot;)</span>
+<span class="fc" id="L263">    val ok = &quot;0123456789 &quot;</span>
+<span class="fc" id="L264">    val ops = &quot;+-&quot;</span>
+<span class="fc bfc" id="L265" title="All 4 branches covered.">    for (check in expression) if (check !in (ok + ops)) throw IllegalArgumentException(&quot;$check is not allowed in expression&quot;)</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">    if (&quot; &quot; !in expression) return safeToInt(expression)</span>
+<span class="fc" id="L267">    val commands = expression.split(&quot; &quot;)</span>
+<span class="pc bpc" id="L268" title="1 of 4 branches missed.">    for (i in commands.indices) {</span>
+<span class="fc bfc" id="L269" title="All 8 branches covered.">        if ((i % 2 == 0 &amp;&amp; commands[i] in ops) || (i % 2 != 0 &amp;&amp; commands[i] !in ops)) throw IllegalArgumentException(&quot;Bad expression format&quot;)</span>
+    }
+<span class="fc" id="L271">    var res = commands[0].toInt()</span>
+<span class="pc bpc" id="L272" title="1 of 4 branches missed.">    for (i in 1..(commands.size - 2) step 2) {</span>
+<span class="fc" id="L273">        val x = commands[i + 1].toInt()</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">        if (x &lt; 0) throw IllegalArgumentException(&quot;Non-positive number in $expression&quot;)</span>
+<span class="fc" id="L275">        when (commands[i]) {</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">            &quot;+&quot; -&gt; res += x</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">            &quot;-&quot; -&gt; res -= x</span>
+        }
+    }
+<span class="fc" id="L280">    return res</span>
+}
+
+/**
+ * Сложная (6 баллов)
+ *
+ * Строка состоит из набора слов, отделённых друг от друга одним пробелом.
+ * Определить, имеются ли в строке повторяющиеся слова, идущие друг за другом.
+ * Слова, отличающиеся только регистром, считать совпадающими.
+ * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
+ * Пример: &quot;Он пошёл в в школу&quot; =&gt; результат 9 (индекс первого 'в')
+ */
+fun firstDuplicateIndex(str: String): Int {
+<span class="nc" id="L293">    val words = str.split(&quot; &quot;)</span>
+<span class="nc" id="L294">    var res = 0</span>
+<span class="nc" id="L295">    var prev = words[0].lowercase()</span>
+<span class="nc" id="L296">    var index = -1</span>
+
+<span class="nc bnc" id="L298" title="All 4 branches missed.">    for (i in 1 until words.size) {</span>
+<span class="nc" id="L299">        val word = words[i].lowercase()</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">        if (prev == word) {</span>
+<span class="nc" id="L301">            index = i - 1</span>
+<span class="nc" id="L302">            break</span>
+        }
+<span class="nc" id="L304">        prev = word</span>
+    }
+<span class="nc bnc" id="L306" title="All 2 branches missed.">    if (index == -1) return -1</span>
+<span class="nc bnc" id="L307" title="All 4 branches missed.">    for (i in 0 until index) res += words[i].length</span>
+<span class="nc" id="L308">    return res + index</span>
+}
+
+/**
+ * Сложная (6 баллов)
+ *
+ * Строка содержит названия товаров и цены на них в формате вида
+ * &quot;Хлеб 39.9; Молоко 62; Курица 184.0; Конфеты 89.9&quot;.
+ * То есть, название товара отделено от цены пробелом,
+ * а цена отделена от названия следующего товара точкой с запятой и пробелом.
+ * Вернуть название самого дорогого товара в списке (в примере это Курица),
+ * или пустую строку при нарушении формата строки.
+ * Все цены должны быть больше нуля либо равны нулю.
+ */
+fun mostExpensive(description: String): String {
+<span class="nc" id="L323">    var res = &quot;&quot;</span>
+<span class="nc bnc" id="L324" title="All 4 branches missed.">    if (description.isEmpty()) return res</span>
+<span class="nc" id="L325">    val goods = description.split(&quot;; &quot;)</span>
+<span class="nc" id="L326">    var mPrice = 0.0</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">    for (good in goods) {</span>
+<span class="nc" id="L328">        val parts = good.split(&quot; &quot;)</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (parts[1].toDouble() &gt;= mPrice) {</span>
+<span class="nc" id="L330">            res = parts[0]</span>
+<span class="nc" id="L331">            mPrice = parts[1].toDouble()</span>
+        }
+    }
+<span class="nc" id="L334">    return res</span>
+}
+
+/**
+ * Сложная (6 баллов)
+ *
+ * Перевести число roman, заданное в римской системе счисления,
+ * в десятичную систему и вернуть как результат.
+ * Римские цифры: 1 = I, 4 = IV, 5 = V, 9 = IX, 10 = X, 40 = XL, 50 = L,
+ * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
+ * Например: XXIII = 23, XLIV = 44, C = 100
+ *
+ * Вернуть -1, если roman не является корректным римским числом
+ */
+fun fromRoman(roman: String): Int {
+<span class="fc bfc" id="L349" title="All 2 branches covered.">    if (roman == &quot;&quot;) return -1</span>
+<span class="fc" id="L350">    val ok = &quot;IVXLCDM&quot;</span>
+<span class="fc bfc" id="L351" title="All 4 branches covered.">    for (ch in roman) if (ch !in ok) return -1</span>
+
+<span class="fc" id="L353">    var str = roman</span>
+<span class="fc" id="L354">    var res = 0</span>
+
+<span class="fc bfc" id="L356" title="All 2 branches covered.">    while (&quot;CM&quot; in str) {</span>
+<span class="fc" id="L357">        res += 900</span>
+<span class="fc" id="L358">        str = str.substringBefore(&quot;CM&quot;) + str.substringAfter(&quot;CM&quot;)</span>
+    }
+<span class="fc bfc" id="L360" title="All 2 branches covered.">    while (&quot;M&quot; in str) {</span>
+<span class="fc" id="L361">        res += 1000</span>
+<span class="fc" id="L362">        str = str.substringBefore(&quot;M&quot;) + str.substringAfter(&quot;M&quot;)</span>
+    }
+<span class="fc bfc" id="L364" title="All 2 branches covered.">    while (&quot;CD&quot; in str) {</span>
+<span class="fc" id="L365">        res += 400</span>
+<span class="fc" id="L366">        str = str.substringBefore(&quot;CD&quot;) + str.substringAfter(&quot;CD&quot;)</span>
+    }
+<span class="fc bfc" id="L368" title="All 2 branches covered.">    while (&quot;D&quot; in str) {</span>
+<span class="fc" id="L369">        res += 500</span>
+<span class="fc" id="L370">        str = str.substringBefore(&quot;D&quot;) + str.substringAfter(&quot;D&quot;)</span>
+    }
+<span class="fc bfc" id="L372" title="All 2 branches covered.">    while (&quot;XC&quot; in str) {</span>
+<span class="fc" id="L373">        res += 90</span>
+<span class="fc" id="L374">        str = str.substringBefore(&quot;XC&quot;) + str.substringAfter(&quot;XC&quot;)</span>
+    }
+<span class="fc bfc" id="L376" title="All 2 branches covered.">    while (&quot;C&quot; in str) {</span>
+<span class="fc" id="L377">        res += 100</span>
+<span class="fc" id="L378">        str = str.substringBefore(&quot;C&quot;) + str.substringAfter(&quot;C&quot;)</span>
+    }
+<span class="fc bfc" id="L380" title="All 2 branches covered.">    while (&quot;XL&quot; in str) {</span>
+<span class="fc" id="L381">        res += 40</span>
+<span class="fc" id="L382">        str = str.substringBefore(&quot;XL&quot;) + str.substringAfter(&quot;XL&quot;)</span>
+    }
+<span class="fc bfc" id="L384" title="All 2 branches covered.">    while (&quot;L&quot; in str) {</span>
+<span class="fc" id="L385">        res += 50</span>
+<span class="fc" id="L386">        str = str.substringBefore(&quot;L&quot;) + str.substringAfter(&quot;L&quot;)</span>
+    }
+<span class="fc bfc" id="L388" title="All 2 branches covered.">    while (&quot;IX&quot; in str) {</span>
+<span class="fc" id="L389">        res += 9</span>
+<span class="fc" id="L390">        str = str.substringBefore(&quot;IX&quot;) + str.substringAfter(&quot;IX&quot;)</span>
+    }
+<span class="fc bfc" id="L392" title="All 2 branches covered.">    while (&quot;X&quot; in str) {</span>
+<span class="fc" id="L393">        res += 10</span>
+<span class="fc" id="L394">        str = str.substringBefore(&quot;X&quot;) + str.substringAfter(&quot;X&quot;)</span>
+    }
+<span class="fc bfc" id="L396" title="All 2 branches covered.">    while (&quot;IV&quot; in str) {</span>
+<span class="fc" id="L397">        res += 4</span>
+<span class="fc" id="L398">        str = str.substringBefore(&quot;IV&quot;) + str.substringAfter(&quot;IV&quot;)</span>
+    }
+<span class="fc bfc" id="L400" title="All 2 branches covered.">    while (&quot;V&quot; in str) {</span>
+<span class="fc" id="L401">        res += 5</span>
+<span class="fc" id="L402">        str = str.substringBefore(&quot;V&quot;) + str.substringAfter(&quot;V&quot;)</span>
+    }
+<span class="fc bfc" id="L404" title="All 2 branches covered.">    while (&quot;I&quot; in str) {</span>
+<span class="fc" id="L405">        res += 1</span>
+<span class="fc" id="L406">        str = str.substringBefore(&quot;I&quot;) + str.substringAfter(&quot;I&quot;)</span>
+    }
+
+<span class="fc" id="L409">    return res</span>
+}
+
+/**
+ * Очень сложная (7 баллов)
+ *
+ * Имеется специальное устройство, представляющее собой
+ * конвейер из cells ячеек (нумеруются от 0 до cells - 1 слева направо) и датчик, двигающийся над этим конвейером.
+ * Строка commands содержит последовательность команд, выполняемых данным устройством, например +&gt;+&gt;+&gt;+&gt;+
+ * Каждая команда кодируется одним специальным символом:
+ *	&gt; - сдвиг датчика вправо на 1 ячейку;
+ *  &lt; - сдвиг датчика влево на 1 ячейку;
+ *	+ - увеличение значения в ячейке под датчиком на 1 ед.;
+ *	- - уменьшение значения в ячейке под датчиком на 1 ед.;
+ *	[ - если значение под датчиком равно 0, в качестве следующей команды следует воспринимать
+ *  	не следующую по порядку, а идущую за соответствующей следующей командой ']' (с учётом вложенности);
+ *	] - если значение под датчиком не равно 0, в качестве следующей команды следует воспринимать
+ *  	не следующую по порядку, а идущую за соответствующей предыдущей командой '[' (с учётом вложенности);
+ *      (комбинация [] имитирует цикл)
+ *  пробел - пустая команда
+ *
+ * Изначально все ячейки заполнены значением 0 и датчик стоит на ячейке с номером N/2 (округлять вниз)
+ *
+ * После выполнения limit команд или всех команд из commands следует прекратить выполнение последовательности команд.
+ * Учитываются все команды, в том числе несостоявшиеся переходы (&quot;[&quot; при значении под датчиком не равном 0 и &quot;]&quot; при
+ * значении под датчиком равном 0) и пробелы.
+ *
+ * Вернуть список размера cells, содержащий элементы ячеек устройства после завершения выполнения последовательности.
+ * Например, для 10 ячеек и командной строки +&gt;+&gt;+&gt;+&gt;+ результат должен быть 0,0,0,0,0,1,1,1,1,1
+ *
+ * Все прочие символы следует считать ошибочными и формировать исключение IllegalArgumentException.
+ * То же исключение формируется, если у символов [ ] не оказывается пары.
+ * Выход за границу конвейера также следует считать ошибкой и формировать исключение IllegalStateException.
+ * Считать, что ошибочные символы и непарные скобки являются более приоритетной ошибкой чем выход за границу ленты,
+ * то есть если в программе присутствует некорректный символ или непарная скобка, то должно быть выброшено
+ * IllegalArgumentException.
+ * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
+ *
+ */
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List&lt;Int&gt; {
+    fun check(str: String): Boolean {
+<span class="nc" id="L450">        val ok = &quot; &lt;&gt;+-[]&quot;</span>
+<span class="nc bnc" id="L451" title="All 4 branches missed.">        for (ch in str) if (ch !in ok) return false</span>
+<span class="nc" id="L452">        var brackets = 0</span>
+<span class="nc bnc" id="L453" title="All 2 branches missed.">        for (ch in str) {</span>
+<span class="nc" id="L454">            when (ch) {</span>
+<span class="nc bnc" id="L455" title="All 2 branches missed.">                '[' -&gt; brackets++</span>
+<span class="nc bnc" id="L456" title="All 2 branches missed.">                ']' -&gt; brackets--</span>
+            }
+<span class="nc bnc" id="L458" title="All 2 branches missed.">            if (brackets &lt; 0) return false</span>
+        }
+<span class="nc bnc" id="L460" title="All 2 branches missed.">        if (brackets != 0) return false</span>
+<span class="nc" id="L461">        return true</span>
+    }
+
+    fun findNestedLoop(cmds: String, start: Int): String {
+<span class="nc" id="L465">        val field = cmds.substring(start + 1)</span>
+<span class="nc" id="L466">        val sb = StringBuilder()</span>
+<span class="nc" id="L467">        var toFind = 1</span>
+<span class="nc" id="L468">        var cur = 0</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">        while (toFind != 0) {</span>
+<span class="nc" id="L470">            when (field[cur]) {</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">                '[' -&gt; {</span>
+<span class="nc" id="L472">                    toFind++</span>
+<span class="nc" id="L473">                    sb.append(field[cur])</span>
+                }
+<span class="nc bnc" id="L475" title="All 2 branches missed.">                ']' -&gt; {</span>
+<span class="nc" id="L476">                    toFind--</span>
+<span class="nc bnc" id="L477" title="All 2 branches missed.">                    if (toFind != 0) sb.append(field[cur])</span>
+                }
+<span class="nc" id="L479">                else -&gt; sb.append(field[cur])</span>
+            }
+<span class="nc" id="L481">            cur++</span>
+        }
+<span class="nc" id="L483">        return &quot;$sb&quot;</span>
+    }
+
+    fun findReversedNestedLoop(cmds: String, end: Int): String {
+<span class="nc" id="L487">        val sb = StringBuilder()</span>
+<span class="nc" id="L488">        var i = 0</span>
+<span class="nc bnc" id="L489" title="All 2 branches missed.">        while (i != end) {</span>
+<span class="nc" id="L490">            sb.append(cmds[i])</span>
+<span class="nc" id="L491">            i++</span>
+        }
+<span class="nc" id="L493">        val field = sb.toString()</span>
+<span class="nc" id="L494">        sb.clear()</span>
+<span class="nc" id="L495">        i--</span>
+<span class="nc" id="L496">        var toFind = 1</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">        while (toFind != 0) {</span>
+<span class="nc" id="L498">            when (field[i]) {</span>
+<span class="nc bnc" id="L499" title="All 2 branches missed.">                ']' -&gt; {</span>
+<span class="nc" id="L500">                    toFind++</span>
+<span class="nc" id="L501">                    sb.append(field[i])</span>
+                }
+<span class="nc bnc" id="L503" title="All 2 branches missed.">                '[' -&gt; {</span>
+<span class="nc" id="L504">                    toFind--</span>
+<span class="nc bnc" id="L505" title="All 2 branches missed.">                    if (toFind != 0) sb.append(field[i])</span>
+                }
+<span class="nc" id="L507">                else -&gt; sb.append(field[i])</span>
+            }
+<span class="nc" id="L509">            i--</span>
+        }
+<span class="nc" id="L511">        return &quot;$sb&quot;.reversed()</span>
+    }
+
+
+<span class="nc" id="L515">    var currentCell = cells / 2</span>
+<span class="nc" id="L516">    var commandsLeft = limit</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">    if (!check(commands)) throw IllegalArgumentException(&quot;&quot;)</span>
+<span class="nc" id="L518">    val res = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L519" title="All 4 branches missed.">    for (i in 0 until cells) res.add(0)</span>
+    fun executeCommands(cmds: String, finish: Int, res: MutableList&lt;Int&gt;): List&lt;Int&gt; {
+<span class="nc" id="L521">        var currentCommand = 0</span>
+<span class="nc bnc" id="L522" title="All 4 branches missed.">        while (currentCommand &lt; finish &amp;&amp; commandsLeft &gt; 0) {</span>
+<span class="nc" id="L523">            when (cmds[currentCommand]) {</span>
+<span class="nc bnc" id="L524" title="All 2 branches missed.">                '&gt;' -&gt; {</span>
+<span class="nc bnc" id="L525" title="All 2 branches missed.">                    if (currentCell + 1 &lt; cells) currentCell++ else throw IllegalStateException(&quot;&quot;)</span>
+                }
+<span class="nc bnc" id="L527" title="All 2 branches missed.">                '&lt;' -&gt; {</span>
+<span class="nc bnc" id="L528" title="All 2 branches missed.">                    if (currentCell - 1 &gt;= 0) currentCell-- else throw IllegalStateException(&quot;&quot;)</span>
+                }
+<span class="nc bnc" id="L530" title="All 2 branches missed.">                '+' -&gt; res[currentCell]++</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">                '-' -&gt; res[currentCell]--</span>
+<span class="nc bnc" id="L532" title="All 2 branches missed.">                '[' -&gt; {</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">                    if (res[currentCell] == 0) {</span>
+<span class="nc" id="L534">                        val nestedLoop = findNestedLoop(cmds, currentCommand)</span>
+<span class="nc" id="L535">                        currentCommand += nestedLoop.length + 1</span>
+                    }
+                }
+<span class="nc bnc" id="L538" title="All 2 branches missed.">                ']' -&gt; {</span>
+<span class="nc bnc" id="L539" title="All 2 branches missed.">                    if (res[currentCell] != 0) {</span>
+<span class="nc" id="L540">                        val reversedNestedLoop = findReversedNestedLoop(cmds, currentCommand)</span>
+<span class="nc" id="L541">                        currentCommand -= (reversedNestedLoop.length + 1)</span>
+                    }
+                }
+                else -&gt; {
+                }
+            }
+<span class="nc" id="L547">            commandsLeft--</span>
+<span class="nc" id="L548">            currentCommand++</span>
+            //print(&quot;$commandsLeft / $limit    $res\n&quot;)
+        }
+
+<span class="nc" id="L552">        return res</span>
+    }
+
+<span class="nc" id="L555">    executeCommands(commands, commands.length, res)</span>
+
+<span class="nc" id="L557">    return res</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

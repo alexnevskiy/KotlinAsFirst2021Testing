@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TableFunction.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson12.task1</a> &gt; <span class="el_source">TableFunction.kt</span></div><h1>TableFunction.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson12.task1
+
+/**
+ * Класс &quot;табличная функция&quot;.
+ *
+ * Общая сложность задания -- средняя, общая ценность в баллах -- 16.
+ * Объект класса хранит таблицу значений функции (y) от одного аргумента (x).
+ * В таблицу можно добавлять и удалять пары (x, y),
+ * найти в ней ближайшую пару (x, y) по заданному x,
+ * найти (интерполяцией или экстраполяцией) значение y по заданному x.
+ *
+ * Класс должен иметь конструктор по умолчанию (без параметров).
+ */
+<span class="nc" id="L16">class TableFunction {</span>
+
+    /**
+     * Количество пар в таблице
+     */
+<span class="nc" id="L21">    val size: Int get() = TODO()</span>
+
+    /**
+     * Добавить новую пару.
+     * Вернуть true, если пары с заданным x ещё нет,
+     * или false, если она уже есть (в этом случае перезаписать значение y)
+     */
+    fun add(x: Double, y: Double): Boolean {
+<span class="nc" id="L29">        TODO()</span>
+    }
+
+    /**
+     * Удалить пару с заданным значением x.
+     * Вернуть true, если пара была удалена.
+     */
+    fun remove(x: Double): Boolean {
+<span class="nc" id="L37">        TODO()</span>
+    }
+
+    /**
+     * Вернуть коллекцию из всех пар в таблице
+     */
+<span class="nc" id="L43">    fun getPairs(): Collection&lt;Pair&lt;Double, Double&gt;&gt; = TODO()</span>
+
+    /**
+     * Вернуть пару, ближайшую к заданному x.
+     * Если существует две ближайшие пары, вернуть пару с меньшим значением x.
+     * Если таблица пуста, бросить IllegalStateException.
+     */
+<span class="nc" id="L50">    fun findPair(x: Double): Pair&lt;Double, Double&gt;? = TODO()</span>
+
+    /**
+     * Вернуть значение y по заданному x.
+     * Если в таблице есть пара с заданным x, взять значение y из неё.
+     * Если в таблице есть всего одна пара, взять значение y из неё.
+     * Если таблица пуста, бросить IllegalStateException.
+     * Если существуют две пары, такие, что x1 &lt; x &lt; x2, использовать интерполяцию.
+     * Если их нет, но существуют две пары, такие, что x1 &lt; x2 &lt; x или x &gt; x2 &gt; x1, использовать экстраполяцию.
+     */
+<span class="nc" id="L60">    fun getValue(x: Double): Double = TODO()</span>
+
+    /**
+     * Таблицы равны, если в них одинаковое количество пар,
+     * и любая пара из второй таблицы входит также и в первую
+     */
+<span class="nc" id="L66">    override fun equals(other: Any?): Boolean = TODO()</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

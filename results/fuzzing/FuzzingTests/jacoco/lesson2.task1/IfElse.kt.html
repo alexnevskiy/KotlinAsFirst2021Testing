@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IfElse.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson2.task1</a> &gt; <span class="el_source">IfElse.kt</span></div><h1>IfElse.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson2.task1
+
+import lesson1.task1.discriminant
+import kotlin.math.max
+import kotlin.math.sqrt
+
+// Урок 2: ветвления (здесь), логический тип (см. 2.2).
+// Максимальное количество баллов = 6
+// Рекомендуемое количество баллов = 5
+// Вместе с предыдущими уроками = 9/12
+
+/**
+ * Пример
+ *
+ * Найти число корней квадратного уравнения ax^2 + bx + c = 0
+ */
+fun quadraticRootNumber(a: Double, b: Double, c: Double): Int {
+<span class="nc" id="L20">    val discriminant = discriminant(a, b, c)</span>
+<span class="nc" id="L21">    return when {</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">        discriminant &gt; 0.0 -&gt; 2</span>
+<span class="nc bnc" id="L23" title="All 4 branches missed.">        discriminant == 0.0 -&gt; 1</span>
+<span class="nc" id="L24">        else -&gt; 0</span>
+    }
+}
+
+/**
+ * Пример
+ *
+ * Получить строковую нотацию для оценки по пятибалльной системе
+ */
+<span class="nc bnc" id="L33" title="All 5 branches missed.">fun gradeNotation(grade: Int): String = when (grade) {</span>
+<span class="nc" id="L34">    5 -&gt; &quot;отлично&quot;</span>
+<span class="nc" id="L35">    4 -&gt; &quot;хорошо&quot;</span>
+<span class="nc" id="L36">    3 -&gt; &quot;удовлетворительно&quot;</span>
+<span class="nc" id="L37">    2 -&gt; &quot;неудовлетворительно&quot;</span>
+<span class="nc" id="L38">    else -&gt; &quot;несуществующая оценка $grade&quot;</span>
+<span class="nc" id="L39">}</span>
+
+/**
+ * Пример
+ *
+ * Найти наименьший корень биквадратного уравнения ax^4 + bx^2 + c = 0
+ */
+fun minBiRoot(a: Double, b: Double, c: Double): Double {
+    // 1: в главной ветке if выполняется НЕСКОЛЬКО операторов
+<span class="nc bnc" id="L48" title="All 4 branches missed.">    if (a == 0.0) {</span>
+<span class="nc bnc" id="L49" title="All 4 branches missed.">        if (b == 0.0) return Double.NaN // ... и ничего больше не делать</span>
+<span class="nc" id="L50">        val bc = -c / b</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (bc &lt; 0.0) return Double.NaN // ... и ничего больше не делать</span>
+<span class="nc" id="L52">        return -sqrt(bc)</span>
+        // Дальше функция при a == 0.0 не идёт
+    }
+<span class="nc" id="L55">    val d = discriminant(a, b, c)   // 2</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (d &lt; 0.0) return Double.NaN  // 3</span>
+    // 4
+<span class="nc" id="L58">    val y1 = (-b + sqrt(d)) / (2 * a)</span>
+<span class="nc" id="L59">    val y2 = (-b - sqrt(d)) / (2 * a)</span>
+<span class="nc" id="L60">    val y3 = max(y1, y2)       // 5</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">    if (y3 &lt; 0.0) return Double.NaN // 6</span>
+<span class="nc" id="L62">    return -sqrt(y3)           // 7</span>
+}
+
+/**
+ * Простая (2 балла)
+ *
+ * Мой возраст. Для заданного 0 &lt; n &lt; 200, рассматриваемого как возраст человека,
+ * вернуть строку вида: «21 год», «32 года», «12 лет».
+ */
+fun ageDescription(age: Int): String =
+<span class="nc bnc" id="L72" title="All 6 branches missed.">    if (age !in 1..199) &quot;Неверное число&quot;</span>
+<span class="nc bnc" id="L73" title="All 6 branches missed.">    else if (age % 100 in 10..19) &quot;$age лет&quot;</span>
+<span class="nc" id="L74">    else when (age % 10) {</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        1 -&gt; &quot;$age год&quot;</span>
+<span class="nc bnc" id="L76" title="All 6 branches missed.">        in 2..4 -&gt; &quot;$age года&quot;</span>
+<span class="nc" id="L77">        else -&gt; &quot;$age лет&quot;</span>
+<span class="nc" id="L78">    }</span>
+
+/**
+ * Простая (2 балла)
+ *
+ * Путник двигался t1 часов со скоростью v1 км/час, затем t2 часов — со скоростью v2 км/час
+ * и t3 часов — со скоростью v3 км/час.
+ * Определить, за какое время он одолел первую половину пути?
+ */
+fun timeForHalfWay(
+    t1: Double, v1: Double,
+    t2: Double, v2: Double,
+    t3: Double, v3: Double
+): Double {
+<span class="nc" id="L92">    val s1 = t1 * v1</span>
+<span class="nc" id="L93">    val s2 = t2 * v2</span>
+<span class="nc" id="L94">    val s3 = t3 * v3</span>
+<span class="nc" id="L95">    val halfWay = (s1 + s2 + s3) / 2</span>
+
+<span class="nc" id="L97">    return when {</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        halfWay &lt; s1 -&gt; halfWay / v1</span>
+<span class="nc bnc" id="L99" title="All 6 branches missed.">        halfWay in s1..(s1 + s2) -&gt; (halfWay - s1) / v2 + t1</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        halfWay &gt; s1 + s2 -&gt; (halfWay - s1 - s2) / v3 + t1 + t2</span>
+<span class="nc" id="L101">        else -&gt; 0.0</span>
+    }
+}
+
+/**
+ * Простая (2 балла)
+ *
+ * Нa шахматной доске стоят черный король и две белые ладьи (ладья бьет по горизонтали и вертикали).
+ * Определить, не находится ли король под боем, а если есть угроза, то от кого именно.
+ * Вернуть 0, если угрозы нет, 1, если угроза только от первой ладьи, 2, если только от второй ладьи,
+ * и 3, если угроза от обеих ладей.
+ * Считать, что ладьи не могут загораживать друг друга
+ */
+fun whichRookThreatens(
+    kingX: Int, kingY: Int,
+    rookX1: Int, rookY1: Int,
+    rookX2: Int, rookY2: Int
+): Int {
+<span class="nc bnc" id="L119" title="All 4 branches missed.">    if (kingX == rookX1 || kingY == rookY1)</span>
+<span class="nc bnc" id="L120" title="All 4 branches missed.">        return if (kingX == rookX2 || kingY == rookY2) 3 else 1</span>
+<span class="nc bnc" id="L121" title="All 4 branches missed.">    if (kingX == rookX2 || kingY == rookY2) return 2</span>
+<span class="nc" id="L122">    return 0</span>
+}
+
+/**
+ * Простая (2 балла)
+ *
+ * На шахматной доске стоят черный король и белые ладья и слон
+ * (ладья бьет по горизонтали и вертикали, слон — по диагоналям).
+ * Проверить, есть ли угроза королю и если есть, то от кого именно.
+ * Вернуть 0, если угрозы нет, 1, если угроза только от ладьи, 2, если только от слона,
+ * и 3, если угроза есть и от ладьи и от слона.
+ * Считать, что ладья и слон не могут загораживать друг друга.
+ */
+fun rookOrBishopThreatens(
+    kingX: Int, kingY: Int,
+    rookX: Int, rookY: Int,
+    bishopX: Int, bishopY: Int
+): Int {
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (kotlin.math.abs(kingX - bishopX) == kotlin.math.abs(kingY - bishopY))</span>
+<span class="nc bnc" id="L141" title="All 4 branches missed.">        return if (kingX == rookX || kingY == rookY) 3 else 2</span>
+<span class="nc bnc" id="L142" title="All 4 branches missed.">    if (kingX == rookX || kingY == rookY) return 1</span>
+<span class="nc" id="L143">    return 0</span>
+}
+
+/**
+ * Простая (2 балла)
+ *
+ * Треугольник задан длинами своих сторон a, b, c.
+ * Проверить, является ли данный треугольник остроугольным (вернуть 0),
+ * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
+ * Если такой треугольник не существует, вернуть -1.
+ */
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    // check if exists
+<span class="nc bnc" id="L156" title="All 6 branches missed.">    if (a + b &lt; c || a + c &lt; b || b + c &lt; a)</span>
+<span class="nc" id="L157">        return -1</span>
+    // sort sides
+<span class="nc" id="L159">    val maxSide = maxOf(a, b, c)</span>
+<span class="nc" id="L160">    val minSide = minOf(a, b, c)</span>
+<span class="nc" id="L161">    val medSide = a + b + c - maxSide - minSide</span>
+    // find cos
+<span class="nc" id="L163">    val cosG = (medSide * medSide + minSide * minSide - maxSide * maxSide) / (2 * medSide * minSide)</span>
+    // check cos
+<span class="nc" id="L165">    return when {</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        cosG &gt; 0 -&gt; 0</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        cosG &lt; 0 -&gt; 2</span>
+<span class="nc" id="L168">        else -&gt; 1</span>
+    }
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * Даны четыре точки на одной прямой: A, B, C и D.
+ * Координаты точек a, b, c, d соответственно, b &gt;= a, d &gt;= c.
+ * Найти длину пересечения отрезков AB и CD.
+ * Если пересечения нет, вернуть -1.
+ * 0, 10, 0, 10
+ */
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+<span class="nc" id="L182">    when {</span>
+<span class="nc bnc" id="L183" title="All 4 branches missed.">        c &gt; b || d &lt; a -&gt; -1</span>
+<span class="nc bnc" id="L184" title="All 8 branches missed.">        c in a..b &amp;&amp; d &gt;= b -&gt; b - c</span>
+<span class="nc bnc" id="L185" title="All 4 branches missed.">        c &gt;= a &amp;&amp; d &lt;= b -&gt; d - c</span>
+<span class="nc bnc" id="L186" title="All 8 branches missed.">        a in c..d &amp;&amp; d &lt;= b -&gt; d - a</span>
+<span class="nc bnc" id="L187" title="All 4 branches missed.">        a &gt;= c &amp;&amp; b &lt;= d -&gt; b - a</span>
+<span class="nc" id="L188">        else -&gt; 0</span>
+<span class="nc" id="L189">    }</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

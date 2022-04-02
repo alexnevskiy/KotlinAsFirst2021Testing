@@ -35,16 +35,74 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>1.6.10</version>
         </dependency>
+
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.0.0</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-surefire-provider</artifactId>
             <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>1.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.berkeley.cs.jqf</groupId>
+            <artifactId>jqf-fuzz</artifactId>
+            <version>1.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>edu.berkeley.cs.jqf</groupId>
+            <artifactId>jqf-instrument</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.berkeley.cs.jqf</groupId>
+            <artifactId>jqf-examples</artifactId>
+            <version>1.7</version>
+        </dependency>
+
+        <!-- JUnit-QuickCheck: API to write generators -->
+        <dependency>
+            <groupId>com.pholser</groupId>
+            <artifactId>junit-quickcheck-generators</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.report</artifactId>
+            <version>0.8.7</version>
         </dependency>
     </dependencies>
 
@@ -82,6 +140,7 @@
                     </packages>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -90,6 +149,7 @@
                     <target>9</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -98,22 +158,19 @@
                     <argLine>@{argLine} -Xmx2048m</argLine>
                     <testFailureIgnore>true</testFailureIgnore>
                     <includes>
-                        <include>**/*Testing*.*</include>
+                        <include>**/FuzzingTests.*</include>
+<!--                        <include>**/GenerativeFuzzingTests.*</include>-->
                     </includes>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.0.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>5.0.0</version>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                        <version>4.13.2</version>
                     </dependency>
                 </dependencies>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -131,14 +188,18 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
                 <configuration>
-                    <destFile>results/coverage/jacoco.exec</destFile>
-                    <dataFile>results/coverage/jacoco.exec</dataFile>
-                    <outputDirectory>results/coverage/jacoco</outputDirectory>
+                    <destFile>results/fuzzing/FuzzingTests/jacoco.exec</destFile>
+                    <dataFile>results/fuzzing/FuzzingTests/jacoco.exec</dataFile>
+                    <outputDirectory>results/fuzzing/FuzzingTests/jacoco</outputDirectory>
+<!--                    <destFile>results/fuzzing/GenerativeFuzzingTests/jacoco.exec</destFile>-->
+<!--                    <dataFile>results/fuzzing/GenerativeFuzzingTests/jacoco.exec</dataFile>-->
+<!--                    <outputDirectory>results/fuzzing/GenerativeFuzzingTests/jacoco</outputDirectory>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -166,6 +227,13 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>edu.berkeley.cs.jqf</groupId>
+                <artifactId>jqf-maven-plugin</artifactId>
+                <!-- confirm the latest version at: https://mvnrepository.com/artifact/edu.berkeley.cs.jqf -->
+                <version>1.8</version>
             </plugin>
         </plugins>
     </build>

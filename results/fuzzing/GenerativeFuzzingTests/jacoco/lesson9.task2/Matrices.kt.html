@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Matrices.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson9.task2</a> &gt; <span class="el_source">Matrices.kt</span></div><h1>Matrices.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson9.task2
+
+import lesson9.task1.Matrix
+import lesson9.task1.createMatrix
+import kotlin.math.*
+import java.util.PriorityQueue
+
+// Все задачи в этом файле требуют наличия реализации интерфейса &quot;Матрица&quot; в Matrix.kt
+
+/**
+ * Пример
+ *
+ * Транспонировать заданную матрицу matrix.
+ * При транспонировании строки матрицы становятся столбцами и наоборот:
+ *
+ * 1 2 3      1 4 6 3
+ * 4 5 6  ==&gt; 2 5 5 2
+ * 6 5 4      3 6 4 1
+ * 3 2 1
+ */
+fun &lt;E&gt; transpose(matrix: Matrix&lt;E&gt;): Matrix&lt;E&gt; {
+<span class="nc bnc" id="L24" title="All 4 branches missed.">    if (matrix.width &lt; 1 || matrix.height &lt; 1) return matrix</span>
+<span class="nc" id="L25">    val result = createMatrix(height = matrix.width, width = matrix.height, e = matrix[0, 0])</span>
+<span class="nc bnc" id="L26" title="All 4 branches missed.">    for (i in 0 until matrix.width) {</span>
+<span class="nc bnc" id="L27" title="All 4 branches missed.">        for (j in 0 until matrix.height) {</span>
+<span class="nc" id="L28">            result[i, j] = matrix[j, i]</span>
+        }
+    }
+<span class="nc" id="L31">    return result</span>
+}
+
+/**
+ * Пример
+ *
+ * Сложить две заданные матрицы друг с другом.
+ * Складывать можно только матрицы совпадающего размера -- в противном случае бросить IllegalArgumentException.
+ * При сложении попарно складываются соответствующие элементы матриц
+ */
+operator fun Matrix&lt;Int&gt;.plus(other: Matrix&lt;Int&gt;): Matrix&lt;Int&gt; {
+<span class="nc bnc" id="L42" title="All 6 branches missed.">    require(!(width != other.width || height != other.height))</span>
+<span class="nc bnc" id="L43" title="All 4 branches missed.">    if (width &lt; 1 || height &lt; 1) return this</span>
+<span class="nc" id="L44">    val result = createMatrix(height, width, this[0, 0])</span>
+<span class="nc bnc" id="L45" title="All 4 branches missed.">    for (i in 0 until height) {</span>
+<span class="nc bnc" id="L46" title="All 4 branches missed.">        for (j in 0 until width) {</span>
+<span class="nc" id="L47">            result[i, j] = this[i, j] + other[i, j]</span>
+        }
+    }
+<span class="nc" id="L50">    return result</span>
+}
+
+/**
+ * Сложная (5 баллов)
+ *
+ * Заполнить матрицу заданной высоты height и ширины width
+ * натуральными числами от 1 до m*n по спирали,
+ * начинающейся в левом верхнем углу и закрученной по часовой стрелке.
+ *
+ * Пример для height = 4, width = 4:
+ *  1  2  3  4
+ * 12 13 14  5
+ * 11 16 15  6
+ * 10  9  8  7
+ */
+fun generateSpiral(height: Int, width: Int): Matrix&lt;Int&gt; {
+<span class="nc" id="L67">    val res = createMatrix(height, width, 0)</span>
+<span class="nc" id="L68">    var i = 0</span>
+<span class="nc" id="L69">    var j = 0</span>
+<span class="nc" id="L70">    var k = 1</span>
+<span class="nc" id="L71">    val list = (1..height * width).toList()</span>
+<span class="nc" id="L72">    res[i, j] = 1</span>
+    do {
+<span class="nc bnc" id="L74" title="All 4 branches missed.">        while (j + 1 &lt; width &amp;&amp; res[i, j + 1] == 0) {</span>
+<span class="nc" id="L75">            res[i, j + 1] = list[k++]</span>
+<span class="nc" id="L76">            j++</span>
+        }
+<span class="nc bnc" id="L78" title="All 4 branches missed.">        while (i + 1 &lt; height &amp;&amp; res[i + 1, j] == 0) {</span>
+<span class="nc" id="L79">            res[i + 1, j] = list[k++]</span>
+<span class="nc" id="L80">            i++</span>
+        }
+<span class="nc bnc" id="L82" title="All 4 branches missed.">        while (j &gt; 0 &amp;&amp; res[i, j - 1] == 0) {</span>
+<span class="nc" id="L83">            res[i, j - 1] = list[k++]</span>
+<span class="nc" id="L84">            j--</span>
+        }
+<span class="nc bnc" id="L86" title="All 4 branches missed.">        while (i &gt; 0 &amp;&amp; res[i - 1, j] == 0) {</span>
+<span class="nc" id="L87">            res[i - 1, j] = list[k++]</span>
+<span class="nc" id="L88">            i--</span>
+        }
+<span class="nc bnc" id="L90" title="All 8 branches missed.">    } while ((j + 1 &lt; width &amp;&amp; res[i, j + 1] == 0) || (i + 1 &lt; height &amp;&amp; res[i + 1, j] == 0))</span>
+<span class="nc" id="L91">    return res</span>
+}
+
+/**
+ * Сложная (5 баллов)
+ *
+ * Заполнить матрицу заданной высоты height и ширины width следующим образом.
+ * Элементам, находящимся на периферии (по периметру матрицы), присвоить значение 1;
+ * периметру оставшейся подматрицы – значение 2 и так далее до заполнения всей матрицы.
+ *
+ * Пример для height = 5, width = 6:
+ *  1  1  1  1  1  1
+ *  1  2  2  2  2  1
+ *  1  2  3  3  2  1
+ *  1  2  2  2  2  1
+ *  1  1  1  1  1  1
+ */
+fun generateRectangles(height: Int, width: Int): Matrix&lt;Int&gt; {
+<span class="nc" id="L109">    val res = createMatrix(height, width, 0)</span>
+<span class="nc" id="L110">    var i = 0</span>
+<span class="nc" id="L111">    var j = 0</span>
+<span class="nc" id="L112">    res[i, j] = 1</span>
+<span class="nc" id="L113">    var cycle = 0</span>
+    do {
+<span class="nc" id="L115">        cycle++</span>
+<span class="nc bnc" id="L116" title="All 4 branches missed.">        while (j + 1 &lt; width &amp;&amp; res[i, j + 1] == 0) {</span>
+<span class="nc" id="L117">            res[i, j + 1] = cycle</span>
+<span class="nc" id="L118">            j++</span>
+        }
+<span class="nc bnc" id="L120" title="All 4 branches missed.">        while (i + 1 &lt; height &amp;&amp; res[i + 1, j] == 0) {</span>
+<span class="nc" id="L121">            res[i + 1, j] = cycle</span>
+<span class="nc" id="L122">            i++</span>
+        }
+<span class="nc bnc" id="L124" title="All 4 branches missed.">        while (j &gt; 0 &amp;&amp; res[i, j - 1] == 0) {</span>
+<span class="nc" id="L125">            res[i, j - 1] = cycle</span>
+<span class="nc" id="L126">            j--</span>
+        }
+<span class="nc bnc" id="L128" title="All 4 branches missed.">        while (i &gt; 0 &amp;&amp; res[i - 1, j] == 0) {</span>
+<span class="nc" id="L129">            res[i - 1, j] = cycle</span>
+<span class="nc" id="L130">            i--</span>
+        }
+<span class="nc bnc" id="L132" title="All 8 branches missed.">    } while ((j + 1 &lt; width &amp;&amp; res[i, j + 1] == 0) || (i + 1 &lt; height &amp;&amp; res[i + 1, j] == 0))</span>
+<span class="nc" id="L133">    return res</span>
+}
+
+/**
+ * Сложная (5 баллов)
+ *
+ * Заполнить матрицу заданной высоты height и ширины width диагональной змейкой:
+ * в левый верхний угол 1, во вторую от угла диагональ 2 и 3 сверху вниз, в третью 4-6 сверху вниз и так далее.
+ *
+ * Пример для height = 5, width = 4:
+ *  1  2  4  7
+ *  3  5  8 11
+ *  6  9 12 15
+ * 10 13 16 18
+ * 14 17 19 20
+ */
+fun generateSnake(height: Int, width: Int): Matrix&lt;Int&gt; {
+<span class="nc" id="L150">    val res = createMatrix(height, width, 0)</span>
+<span class="nc" id="L151">    var k = 0</span>
+<span class="nc" id="L152">    var i = 0</span>
+<span class="nc" id="L153">    var j = 0</span>
+<span class="nc" id="L154">    val list = (1..height * width).toList()</span>
+<span class="nc bnc" id="L155" title="All 4 branches missed.">    if (height == 1 &amp;&amp; width == 1) return createMatrix(1, 1, 1)</span>
+
+    fun findRight(matr: Matrix&lt;Int&gt;): Pair&lt;Int, Int&gt; {
+<span class="nc bnc" id="L158" title="All 4 branches missed.">        for (h in 0 until matr.height)</span>
+<span class="nc bnc" id="L159" title="All 4 branches missed.">            for (w in 0 until matr.width)</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">                if (matr[h, w] == 0) return Pair(h, w)</span>
+<span class="nc" id="L161">        return Pair(-1, -1)</span>
+    }
+
+<span class="nc" id="L164">    res[i, j] = list[k++]</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">    while (list[k] != height * width) {</span>
+<span class="nc" id="L166">        j = findRight(res).second</span>
+<span class="nc" id="L167">        i = findRight(res).first</span>
+<span class="nc bnc" id="L168" title="All 4 branches missed.">        while (i &lt; height &amp;&amp; j &gt;= 0) {</span>
+<span class="nc" id="L169">            res[i, j] = list[k++]</span>
+<span class="nc" id="L170">            i++</span>
+<span class="nc" id="L171">            j--</span>
+        }
+
+    }
+<span class="nc" id="L175">    res[height - 1, width - 1] = height * width</span>
+
+<span class="nc" id="L177">    return res</span>
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * Содержимое квадратной матрицы matrix (с произвольным содержимым) повернуть на 90 градусов по часовой стрелке.
+ * Если height != width, бросить IllegalArgumentException.
+ *
+ * Пример:    Станет:
+ * 1 2 3      7 4 1
+ * 4 5 6      8 5 2
+ * 7 8 9      9 6 3
+ */
+fun &lt;E&gt; rotate(matrix: Matrix&lt;E&gt;): Matrix&lt;E&gt; {
+<span class="nc bnc" id="L192" title="All 2 branches missed.">    if (matrix.width != matrix.height) throw IllegalArgumentException(&quot;Not quadratic matrix&quot;)</span>
+<span class="nc" id="L193">    val res = createMatrix(matrix.height, matrix.width, matrix[0, 0])</span>
+<span class="nc bnc" id="L194" title="All 4 branches missed.">    for (i in 0 until matrix.height)</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">        for (j in 0 until matrix.width)</span>
+<span class="nc" id="L196">            res[i, j] = matrix[matrix.width - j - 1, i]</span>
+<span class="nc" id="L197">    return res</span>
+}
+
+/**
+ * Сложная (5 баллов)
+ *
+ * Проверить, является ли квадратная целочисленная матрица matrix латинским квадратом.
+ * Латинским квадратом называется матрица размером n x n,
+ * каждая строка и каждый столбец которой содержат все числа от 1 до n.
+ * Если height != width, вернуть false.
+ *
+ * Пример латинского квадрата 3х3:
+ * 2 3 1
+ * 1 2 3
+ * 3 1 2
+ */
+fun isLatinSquare(matrix: Matrix&lt;Int&gt;): Boolean {
+<span class="nc bnc" id="L214" title="All 2 branches missed.">    if (matrix.width != matrix.height) return false</span>
+<span class="nc" id="L215">    val ok = (1..matrix.width).toSet()</span>
+<span class="nc bnc" id="L216" title="All 4 branches missed.">    for (i in 0 until matrix.width) {</span>
+<span class="nc" id="L217">        val r = mutableSetOf&lt;Int&gt;()</span>
+<span class="nc" id="L218">        val w = mutableSetOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L219" title="All 4 branches missed.">        for (j in 0 until matrix.height) {</span>
+<span class="nc" id="L220">            r.add(matrix[i, j])</span>
+<span class="nc" id="L221">            w.add(matrix[j, i])</span>
+        }
+<span class="nc bnc" id="L223" title="All 4 branches missed.">        if (r != ok || w != ok) return false</span>
+    }
+<span class="nc" id="L225">    return true</span>
+}
+
+/**
+ * Средняя (3 балла)
+ *
+ * В матрице matrix каждый элемент заменить суммой непосредственно примыкающих к нему
+ * элементов по вертикали, горизонтали и диагоналям.
+ *
+ * Пример для матрицы 4 x 3: (11=2+4+5, 19=1+3+4+5+6, ...)
+ * 1 2 3       11 19 13
+ * 4 5 6  ===&gt; 19 31 19
+ * 6 5 4       19 31 19
+ * 3 2 1       13 19 11
+ *
+ * Поскольку в матрице 1 х 1 примыкающие элементы отсутствуют,
+ * для неё следует вернуть как результат нулевую матрицу:
+ *
+ * 42 ===&gt; 0
+ */
+fun sumNeighbours(matrix: Matrix&lt;Int&gt;): Matrix&lt;Int&gt; {
+<span class="nc bnc" id="L246" title="All 4 branches missed.">    if (matrix.width == 1 &amp;&amp; matrix.height == 1) return createMatrix(1, 1, 0)</span>
+<span class="nc" id="L247">    val res = createMatrix(matrix.height, matrix.width, 0)</span>
+<span class="nc bnc" id="L248" title="All 4 branches missed.">    for (i in 0 until matrix.height) {</span>
+<span class="nc bnc" id="L249" title="All 4 branches missed.">        for (j in 0 until matrix.width) {</span>
+<span class="nc" id="L250">            var s = 0</span>
+
+<span class="nc" id="L252">            try {</span>
+<span class="nc" id="L253">                s += matrix[i - 1, j]</span>
+<span class="nc" id="L254">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L256">            try {</span>
+<span class="nc" id="L257">                s += matrix[i, j - 1]</span>
+<span class="nc" id="L258">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L260">            try {</span>
+<span class="nc" id="L261">                s += matrix[i - 1, j - 1]</span>
+<span class="nc" id="L262">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L264">            try {</span>
+<span class="nc" id="L265">                s += matrix[i + 1, j]</span>
+<span class="nc" id="L266">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L268">            try {</span>
+<span class="nc" id="L269">                s += matrix[i, j + 1]</span>
+<span class="nc" id="L270">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L272">            try {</span>
+<span class="nc" id="L273">                s += matrix[i + 1, j + 1]</span>
+<span class="nc" id="L274">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L276">            try {</span>
+<span class="nc" id="L277">                s += matrix[i + 1, j - 1]</span>
+<span class="nc" id="L278">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L280">            try {</span>
+<span class="nc" id="L281">                s += matrix[i - 1, j + 1]</span>
+<span class="nc" id="L282">            } catch (e: IndexOutOfBoundsException) {</span>
+            }
+<span class="nc" id="L284">            res[i, j] = s</span>
+        }
+    }
+<span class="nc" id="L287">    return res</span>
+}
+
+/**
+ * Средняя (4 балла)
+ *
+ * Целочисленная матрица matrix состоит из &quot;дырок&quot; (на их месте стоит 0) и &quot;кирпичей&quot; (на их месте стоит 1).
+ * Найти в этой матрице все ряды и колонки, целиком состоящие из &quot;дырок&quot;.
+ * Результат вернуть в виде Holes(rows = список дырчатых рядов, columns = список дырчатых колонок).
+ * Ряды и колонки нумеруются с нуля. Любой из спискоов rows / columns может оказаться пустым.
+ *
+ * Пример для матрицы 5 х 4:
+ * 1 0 1 0
+ * 0 0 1 0
+ * 1 0 0 0 ==&gt; результат: Holes(rows = listOf(4), columns = listOf(1, 3)): 4-й ряд, 1-я и 3-я колонки
+ * 0 0 1 0
+ * 0 0 0 0
+ */
+fun findHoles(matrix: Matrix&lt;Int&gt;): Holes {
+<span class="nc" id="L306">    val rows = mutableListOf&lt;Int&gt;()</span>
+<span class="nc" id="L307">    val columns = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L308" title="All 4 branches missed.">    for (h in 0 until matrix.height) {</span>
+<span class="nc" id="L309">        val cur = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L310" title="All 4 branches missed.">        for (w in 0 until matrix.width)</span>
+<span class="nc" id="L311">            cur.add(matrix[h, w])</span>
+<span class="nc bnc" id="L312" title="All 6 branches missed.">        if (cur.all { it == 0 }) rows.add(h)</span>
+    }
+<span class="nc bnc" id="L314" title="All 4 branches missed.">    for (w in 0 until matrix.width) {</span>
+<span class="nc" id="L315">        val cur = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L316" title="All 4 branches missed.">        for (h in 0 until matrix.height)</span>
+<span class="nc" id="L317">            cur.add(matrix[h, w])</span>
+<span class="nc bnc" id="L318" title="All 6 branches missed.">        if (cur.all { it == 0 }) columns.add(w)</span>
+    }
+<span class="nc" id="L320">    return Holes(rows, columns)</span>
+}
+
+/**
+ * Класс для описания местонахождения &quot;дырок&quot; в матрице
+ */
+<span class="nc" id="L326">data class Holes(val rows: List&lt;Int&gt;, val columns: List&lt;Int&gt;)</span>
+
+/**
+ * Средняя (3 балла)
+ *
+ * В целочисленной матрице matrix каждый элемент заменить суммой элементов подматрицы,
+ * расположенной в левом верхнем углу матрицы matrix и ограниченной справа-снизу данным элементом.
+ *
+ * Пример для матрицы 3 х 3:
+ *
+ * 1  2  3      1  3  6
+ * 4  5  6  =&gt;  5 12 21
+ * 7  8  9     12 27 45
+ *
+ * К примеру, центральный элемент 12 = 1 + 2 + 4 + 5, элемент в левом нижнем углу 12 = 1 + 4 + 7 и так далее.
+ */
+fun sumSubMatrix(matrix: Matrix&lt;Int&gt;): Matrix&lt;Int&gt; {
+<span class="nc" id="L343">    val res = createMatrix(matrix.height, matrix.width, 0)</span>
+<span class="nc bnc" id="L344" title="All 4 branches missed.">    for (h in 0 until matrix.height) {</span>
+<span class="nc bnc" id="L345" title="All 4 branches missed.">        for (w in 0 until matrix.width) {</span>
+<span class="nc" id="L346">            var s = 0</span>
+<span class="nc bnc" id="L347" title="All 4 branches missed.">            for (nh in 0..h)</span>
+<span class="nc bnc" id="L348" title="All 4 branches missed.">                for (nw in 0..w)</span>
+<span class="nc" id="L349">                    s += matrix[nh, nw]</span>
+<span class="nc" id="L350">            res[h, w] = s</span>
+        }
+    }
+<span class="nc" id="L353">    return res</span>
+}
+
+/**
+ * Простая (2 балла)
+ *
+ * Инвертировать заданную матрицу.
+ * При инвертировании знак каждого элемента матрицы следует заменить на обратный
+ */
+operator fun Matrix&lt;Int&gt;.unaryMinus(): Matrix&lt;Int&gt; {
+<span class="nc" id="L363">    val res = this</span>
+<span class="nc bnc" id="L364" title="All 4 branches missed.">    for (h in 0 until this.height)</span>
+<span class="nc bnc" id="L365" title="All 4 branches missed.">        for (w in 0 until this.width)</span>
+<span class="nc" id="L366">            res[h, w] = -this[h, w]</span>
+<span class="nc" id="L367">    return res</span>
+}
+
+/**
+ * Средняя (4 балла)
+ *
+ * Перемножить две заданные матрицы друг с другом.
+ * Матрицы можно умножать, только если ширина первой матрицы совпадает с высотой второй матрицы.
+ * В противном случае бросить IllegalArgumentException.
+ * Подробно про порядок умножения см. статью Википедии &quot;Умножение матриц&quot;.
+ */
+operator fun Matrix&lt;Int&gt;.times(other: Matrix&lt;Int&gt;): Matrix&lt;Int&gt; {
+<span class="nc bnc" id="L379" title="All 2 branches missed.">    if (this.width != other.height) throw IllegalArgumentException(&quot;Incompatible matrices&quot;)</span>
+<span class="nc" id="L380">    val res = createMatrix(this.height, other.width, 0)</span>
+<span class="nc bnc" id="L381" title="All 4 branches missed.">    for (i in 0 until this.height)</span>
+<span class="nc bnc" id="L382" title="All 4 branches missed.">        for (j in 0 until other.width) {</span>
+<span class="nc" id="L383">            var s = 0</span>
+<span class="nc bnc" id="L384" title="All 4 branches missed.">            for (r in 0 until this.width)</span>
+<span class="nc" id="L385">                s += this[i, r] * other[r, j]</span>
+<span class="nc" id="L386">            res[i, j] = s</span>
+        }
+<span class="nc" id="L388">    return res</span>
+}
+
+/**
+ * Сложная (7 баллов)
+ *
+ * Даны мозаичные изображения замочной скважины и ключа. Пройдет ли ключ в скважину?
+ * То есть даны две матрицы key и lock, key.height &lt;= lock.height, key.width &lt;= lock.width, состоящие из нулей и единиц.
+ *
+ * Проверить, можно ли наложить матрицу key на матрицу lock (без поворота, разрешается только сдвиг) так,
+ * чтобы каждой единице в матрице lock (штырь) соответствовал ноль в матрице key (прорезь),
+ * а каждому нулю в матрице lock (дырка) соответствовала, наоборот, единица в матрице key (штырь).
+ * Ключ при сдвиге не может выходить за пределы замка.
+ *
+ * Пример: ключ подойдёт, если его сдвинуть на 1 по ширине
+ * lock    key
+ * 1 0 1   1 0
+ * 0 1 0   0 1
+ * 1 1 1
+ *
+ * Вернуть тройку (Triple) -- (да/нет, требуемый сдвиг по высоте, требуемый сдвиг по ширине).
+ * Если наложение невозможно, то первый элемент тройки &quot;нет&quot; и сдвиги могут быть любыми.
+ */
+fun canOpenLock(key: Matrix&lt;Int&gt;, lock: Matrix&lt;Int&gt;): Triple&lt;Boolean, Int, Int&gt; {
+<span class="nc" id="L412">    val newKey = createMatrix(key.height, key.width, 0)</span>
+<span class="nc bnc" id="L413" title="All 4 branches missed.">    for (h in 0 until key.height)</span>
+<span class="nc bnc" id="L414" title="All 4 branches missed.">        for (w in 0 until key.width)</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">            if (key[h, w] == 0) newKey[h, w] = 1</span>
+<span class="nc bnc" id="L416" title="All 4 branches missed.">    if (key.width == lock.width &amp;&amp; key.height == lock.height)</span>
+<span class="nc bnc" id="L417" title="All 2 branches missed.">        return if (newKey == lock) Triple(true, 0, 0)</span>
+        else
+<span class="nc" id="L419">            Triple(false, 0, 0)</span>
+<span class="nc" id="L420">    var keyX = 0</span>
+<span class="nc" id="L421">    var keyY = 0</span>
+<span class="nc" id="L422">    val keyCode = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L423" title="All 4 branches missed.">    for (h in 0 until newKey.height)</span>
+<span class="nc bnc" id="L424" title="All 4 branches missed.">        for (w in 0 until newKey.width)</span>
+<span class="nc" id="L425">            keyCode.add(newKey[h, w])</span>
+    do {
+        do {
+<span class="nc" id="L428">            val lockCode = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L429" title="All 4 branches missed.">            for (h in keyY until newKey.height + keyY)</span>
+<span class="nc bnc" id="L430" title="All 4 branches missed.">                for (w in keyX until newKey.width + keyX)</span>
+<span class="nc" id="L431">                    lockCode.add(lock[h, w])</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">            if (keyCode == lockCode) return Triple(true, keyY, keyX)</span>
+<span class="nc" id="L433">            keyX++</span>
+<span class="nc bnc" id="L434" title="All 2 branches missed.">        } while (keyX - 1 != (lock.width - newKey.width))</span>
+<span class="nc" id="L435">        keyX = 0</span>
+<span class="nc" id="L436">        keyY++</span>
+<span class="nc bnc" id="L437" title="All 2 branches missed.">    } while (keyY - 1 != (lock.height - newKey.height))</span>
+<span class="nc" id="L438">    return Triple(false, -1, -1)</span>
+}
+
+fun Matrix&lt;Int&gt;.find(key: Int): Pair&lt;Int, Int&gt; {
+<span class="nc bnc" id="L442" title="All 4 branches missed.">    for (h in 0 until this.height)</span>
+<span class="nc bnc" id="L443" title="All 4 branches missed.">        for (w in 0 until this.width)</span>
+<span class="nc bnc" id="L444" title="All 2 branches missed.">            if (this[h, w] == key) return Pair(h, w)</span>
+<span class="nc" id="L445">    throw IllegalStateException(&quot;No such value&quot;)</span>
+}
+
+fun Matrix&lt;Int&gt;.swap(a: Int, b: Int) {
+<span class="nc" id="L449">    val acoords = this.find(a)</span>
+<span class="nc" id="L450">    val bcoords = this.find(b)</span>
+<span class="nc bnc" id="L451" title="All 4 branches missed.">    if (!((bcoords.first == acoords.first + 1 &amp;&amp; bcoords.second == acoords.second) ||</span>
+<span class="nc bnc" id="L452" title="All 4 branches missed.">                (bcoords.first == acoords.first &amp;&amp; bcoords.second == acoords.second - 1) ||</span>
+<span class="nc bnc" id="L453" title="All 4 branches missed.">                (bcoords.first == acoords.first &amp;&amp; bcoords.second == acoords.second + 1) ||</span>
+<span class="nc bnc" id="L454" title="All 4 branches missed.">                (bcoords.first == acoords.first - 1 &amp;&amp; bcoords.second == acoords.second))</span>
+<span class="nc" id="L455">    ) throw IllegalStateException(&quot;$a move is not allowed&quot;)</span>
+<span class="nc" id="L456">    this[bcoords.first, bcoords.second] = a</span>
+<span class="nc" id="L457">    this[acoords.first, acoords.second] = b</span>
+<span class="nc" id="L458">}</span>
+
+fun Matrix&lt;Int&gt;.toList(): MutableList&lt;Int&gt; {
+<span class="nc" id="L461">    val res = mutableListOf&lt;Int&gt;()</span>
+<span class="nc bnc" id="L462" title="All 4 branches missed.">    for (h in 0 until this.height)</span>
+<span class="nc bnc" id="L463" title="All 4 branches missed.">        for (w in 0 until this.width)</span>
+<span class="nc" id="L464">            res.add(this[h, w])</span>
+<span class="nc" id="L465">    return res</span>
+}
+
+/**
+ * Сложная (8 баллов)
+ */
+fun fifteenGameMoves(matrix: Matrix&lt;Int&gt;, moves: List&lt;Int&gt;): Matrix&lt;Int&gt; {
+<span class="nc bnc" id="L472" title="All 2 branches missed.">    for (move in moves)</span>
+<span class="nc" id="L473">        matrix.swap(move, 0)</span>
+<span class="nc" id="L474">    return matrix</span>
+}
+
+<span class="nc" id="L477">fun calculateDistance(a: Int, b: Int) = abs(a % 4 - b % 4) + abs(a / 4 - b / 4)</span>
+
+<span class="nc" id="L479">class Chain(private val state: List&lt;Int&gt;, private val history: List&lt;Int&gt; = listOf()) {</span>
+
+<span class="nc" id="L481">    fun getState() = state</span>
+<span class="nc" id="L482">    fun getHistory() = history</span>
+
+    private fun manhattan(): Int {
+<span class="nc" id="L485">        var res = 0</span>
+<span class="nc bnc" id="L486" title="All 4 branches missed.">        for (i in 0 until 16) if (state[i] != 0) res += calculateDistance((state[i] - 1) % 16, i)</span>
+<span class="nc" id="L487">        return res</span>
+    }
+
+    private fun linear(): Int {
+<span class="nc" id="L491">        var res = 0</span>
+<span class="nc bnc" id="L492" title="All 2 branches missed.">        for (row in 0 until 4) {</span>
+<span class="nc" id="L493">            val r = row * 4</span>
+<span class="nc bnc" id="L494" title="All 2 branches missed.">            for (i in 0 until 3) {</span>
+<span class="nc bnc" id="L495" title="All 2 branches missed.">                if (state[i + r] == 0) continue</span>
+<span class="nc bnc" id="L496" title="All 4 branches missed.">                for (j in i + 1 until 4) {</span>
+<span class="nc bnc" id="L497" title="All 8 branches missed.">                    if (state[j + r] != 0 &amp;&amp; (state[i + r] - 1) / 4 == row &amp;&amp; (state[j + r] - 1) / 4 == row &amp;&amp; state[i + r] &gt; state[j + r]) res++</span>
+                }
+            }
+        }
+<span class="nc bnc" id="L501" title="All 2 branches missed.">        for (col in 0 until 4) {</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">            for (i in 0 until 3) {</span>
+<span class="nc" id="L503">                val qi = 4 * i</span>
+<span class="nc bnc" id="L504" title="All 2 branches missed.">                if (state[qi + col] == 0) continue</span>
+<span class="nc bnc" id="L505" title="All 4 branches missed.">                for (j in i + 1 until 4) {</span>
+<span class="nc" id="L506">                    val qj = 4 * j</span>
+<span class="nc bnc" id="L507" title="All 8 branches missed.">                    if (state[qj + col] != 0 &amp;&amp; (state[qi + col] - 1) % 4 == col &amp;&amp; (state[qj + col] - 1) % 4 == col &amp;&amp; state[qi + col] &gt; state[qj + col]) res++</span>
+                }
+            }
+        }
+<span class="nc" id="L511">        return 2 * res</span>
+    }
+
+<span class="nc" id="L514">    private val h = manhattan() + linear()</span>
+<span class="nc" id="L515">    fun h() = h</span>
+<span class="nc" id="L516">    fun g() = history.size</span>
+<span class="nc" id="L517">    fun f() = g() + h()</span>
+
+    fun getNeighbours(): List&lt;Chain&gt; {
+<span class="nc" id="L520">        val neighs = mutableListOf&lt;Chain&gt;()</span>
+<span class="nc" id="L521">        val zero_coord = state.indexOf(0)</span>
+
+<span class="nc bnc" id="L523" title="All 4 branches missed.">        if (zero_coord &lt; 15 &amp;&amp; calculateDistance(zero_coord, zero_coord + 1) == 1) {</span>
+<span class="nc" id="L524">            val new_state = state.toMutableList()</span>
+<span class="nc" id="L525">            new_state[zero_coord + 1] = new_state[zero_coord].also { new_state[zero_coord] = new_state[zero_coord + 1] }</span>
+<span class="nc" id="L526">            neighs.add(Chain(new_state, history + new_state[zero_coord]))</span>
+        }
+<span class="nc bnc" id="L528" title="All 4 branches missed.">        if (zero_coord &gt;= 1 &amp;&amp; calculateDistance(zero_coord, zero_coord - 1) == 1) {</span>
+<span class="nc" id="L529">            val new_state = state.toMutableList()</span>
+<span class="nc" id="L530">            new_state[zero_coord - 1] = new_state[zero_coord].also { new_state[zero_coord] = new_state[zero_coord - 1] }</span>
+<span class="nc" id="L531">            neighs.add(Chain(new_state, history + new_state[zero_coord]))</span>
+        }
+<span class="nc bnc" id="L533" title="All 4 branches missed.">        if (zero_coord &lt; 12 &amp;&amp; calculateDistance(zero_coord, zero_coord + 4) == 1) {</span>
+<span class="nc" id="L534">            val new_state = state.toMutableList()</span>
+<span class="nc" id="L535">            new_state[zero_coord + 4] = new_state[zero_coord].also { new_state[zero_coord] = new_state[zero_coord + 4] }</span>
+<span class="nc" id="L536">            neighs.add(Chain(new_state, history + new_state[zero_coord]))</span>
+        }
+<span class="nc bnc" id="L538" title="All 4 branches missed.">        if (zero_coord &gt;= 4 &amp;&amp; calculateDistance(zero_coord, zero_coord - 4) == 1) {</span>
+<span class="nc" id="L539">            val new_state = state.toMutableList()</span>
+<span class="nc" id="L540">            new_state[zero_coord - 4] = new_state[zero_coord].also { new_state[zero_coord] = new_state[zero_coord - 4] }</span>
+<span class="nc" id="L541">            neighs.add(Chain(new_state, history + new_state[zero_coord]))</span>
+        }
+<span class="nc" id="L543">        return neighs</span>
+    }
+<span class="nc" id="L545">}</span>
+
+fun a_star(start: Chain): Chain {
+<span class="nc" id="L548">    val nodes = mutableMapOf&lt;List&lt;Int&gt;, Int&gt;()</span>
+<span class="nc" id="L549">    val chainHeap = PriorityQueue&lt;Chain&gt;(compareBy { it.f() })</span>
+<span class="nc" id="L550">    chainHeap.add(start)</span>
+<span class="nc bnc" id="L551" title="All 4 branches missed.">    while (chainHeap.isNotEmpty()) {</span>
+<span class="nc" id="L552">        val currentChain = chainHeap.poll()</span>
+<span class="nc" id="L553">        val currentNode = currentChain.getState()</span>
+<span class="nc bnc" id="L554" title="All 2 branches missed.">        if (currentChain.h() == 0)</span>
+<span class="nc" id="L555">            return currentChain</span>
+<span class="nc" id="L556">        nodes[currentNode] = currentChain.g()</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">        for (ch in currentChain.getNeighbours()) {</span>
+<span class="nc bnc" id="L558" title="All 2 branches missed.">            if (ch.getState() in nodes) {</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">                if (ch.g() &gt;= nodes[ch.getState()]!!)</span>
+<span class="nc" id="L560">                    continue</span>
+<span class="nc" id="L561">                nodes[ch.getState()] = ch.g()</span>
+            }
+<span class="nc" id="L563">            chainHeap.add(ch)</span>
+        }
+    }
+<span class="nc" id="L566">    return Chain(listOf(-1))</span>
+}
+
+/**
+ * Очень сложная (32 балла)
+ */
+fun fifteenGameSolution(matrix: Matrix&lt;Int&gt;): List&lt;Int&gt; {
+<span class="nc bnc" id="L573" title="All 4 branches missed.">    if (matrix.width != 4 || matrix.height != 4) throw IllegalArgumentException(&quot;Not 4x4 matrix&quot;)</span>
+<span class="nc" id="L574">    val input = matrix.toList()</span>
+<span class="nc" id="L575">    var n = input.indexOf(0) / 4 + 1</span>
+<span class="nc bnc" id="L576" title="All 2 branches missed.">    for (i in 1..15) {</span>
+<span class="nc" id="L577">        var k = 0</span>
+<span class="nc bnc" id="L578" title="All 4 branches missed.">        for (j in input.indexOf(i) until 16)</span>
+<span class="nc bnc" id="L579" title="All 4 branches missed.">            if (input[j] != 0 &amp;&amp; input[j] &lt; i)</span>
+<span class="nc" id="L580">                k++</span>
+<span class="nc" id="L581">        n += k</span>
+    }
+<span class="nc bnc" id="L583" title="All 2 branches missed.">    return if (n % 2 != 0) {</span>
+<span class="nc" id="L584">        input[input.indexOf(14)] = 15.also { input[input.indexOf(15)] = 14 }</span>
+<span class="nc" id="L585">        val result = a_star(Chain(input)).getHistory().toMutableList()</span>
+<span class="nc bnc" id="L586" title="All 4 branches missed.">        for (i in result.indices)</span>
+<span class="nc bnc" id="L587" title="All 3 branches missed.">            when (result[i]) {</span>
+<span class="nc" id="L588">                14 -&gt; result[i] = 15</span>
+<span class="nc" id="L589">                15 -&gt; result[i] = 14</span>
+                else -&gt; {
+                }
+            }
+<span class="nc" id="L593">        result</span>
+    } else {
+<span class="nc" id="L595">        a_star(Chain(input)).getHistory().toMutableList()</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

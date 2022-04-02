@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Graph.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson8.task3</a> &gt; <span class="el_source">Graph.kt</span></div><h1>Graph.kt</h1><pre class="source lang-java linenums">package lesson8.task3
+
+import java.util.*
+
+<span class="nc" id="L5">class Graph {</span>
+<span class="nc" id="L6">    private data class Vertex(val name: String) {</span>
+<span class="nc" id="L7">        val neighbors = mutableSetOf&lt;Vertex&gt;()</span>
+    }
+
+<span class="nc" id="L10">    private val vertices = mutableMapOf&lt;String, Vertex&gt;()</span>
+
+<span class="nc bnc" id="L12" title="All 2 branches missed.">    private operator fun get(name: String) = vertices[name] ?: throw IllegalArgumentException()</span>
+
+    fun addVertex(name: String) {
+<span class="nc" id="L15">        vertices[name] = Vertex(name)</span>
+<span class="nc" id="L16">    }</span>
+
+    private fun connect(first: Vertex, second: Vertex) {
+<span class="nc" id="L19">        first.neighbors.add(second)</span>
+<span class="nc" id="L20">        second.neighbors.add(first)</span>
+<span class="nc" id="L21">    }</span>
+
+<span class="nc" id="L23">    fun connect(first: String, second: String) = connect(this[first], this[second])</span>
+
+    /**
+     * Пример
+     *
+     * По двум вершинам рассчитать расстояние между ними = число дуг на самом коротком пути между ними.
+     * Вернуть -1, если пути между вершинами не существует.
+     *
+     * Используется поиск в ширину
+     */
+<span class="nc" id="L33">    fun bfs(start: String, finish: String) = bfs(this[start], this[finish])</span>
+
+    private fun bfs(start: Vertex, finish: Vertex): Int {
+<span class="nc" id="L36">        val queue = ArrayDeque&lt;Vertex&gt;()</span>
+<span class="nc" id="L37">        queue.add(start)</span>
+<span class="nc" id="L38">        val visited = mutableMapOf(start to 0)</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">        while (queue.isNotEmpty()) {</span>
+<span class="nc" id="L40">            val next = queue.poll()</span>
+<span class="nc" id="L41">            val distance = visited[next]!!</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            if (next == finish) return distance</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            for (neighbor in next.neighbors) {</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                if (neighbor in visited) continue</span>
+<span class="nc" id="L45">                visited[neighbor] = distance + 1</span>
+<span class="nc" id="L46">                queue.add(neighbor)</span>
+            }
+        }
+<span class="nc" id="L49">        return -1</span>
+    }
+
+    /**
+     * Пример
+     *
+     * По двум вершинам рассчитать расстояние между ними = число дуг на самом коротком пути между ними.
+     * Вернуть -1, если пути между вершинами не существует.
+     *
+     * Используется поиск в глубину
+     */
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    fun dfs(start: String, finish: String): Int = dfs(this[start], this[finish], setOf()) ?: -1</span>
+
+    private fun dfs(start: Vertex, finish: Vertex, visited: Set&lt;Vertex&gt;): Int? =
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (start == finish) 0</span>
+        else {
+<span class="nc" id="L65">            val min = start.neighbors</span>
+<span class="nc bnc" id="L66" title="All 4 branches missed.">                .filter { it !in visited }</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">                .mapNotNull { dfs(it, finish, visited + start) }</span>
+<span class="nc" id="L68">                .minOrNull()</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if (min == null) null else min + 1</span>
+<span class="nc" id="L70">        }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

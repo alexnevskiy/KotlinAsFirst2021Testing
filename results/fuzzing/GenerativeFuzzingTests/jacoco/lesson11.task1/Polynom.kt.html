@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Polynom.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson11.task1</a> &gt; <span class="el_source">Polynom.kt</span></div><h1>Polynom.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson11.task1
+
+import kotlin.math.abs
+import kotlin.math.pow
+
+/**
+ * Класс &quot;полином с вещественными коэффициентами&quot;.
+ *
+ * Общая сложность задания -- средняя, общая ценность в баллах -- 16.
+ * Объект класса -- полином от одной переменной (x) вида 7x^4+3x^3-6x^2+x-8.
+ * Количество слагаемых неограничено.
+ *
+ * Полиномы можно складывать -- (x^2+3x+2) + (x^3-2x^2-x+4) = x^3-x^2+2x+6,
+ * вычитать -- (x^3-2x^2-x+4) - (x^2+3x+2) = x^3-3x^2-4x+2,
+ * умножать -- (x^2+3x+2) * (x^3-2x^2-x+4) = x^5+x^4-5x^3-3x^2+10x+8,
+ * делить с остатком -- (x^3-2x^2-x+4) / (x^2+3x+2) = x-5, остаток 12x+16
+ * вычислять значение при заданном x: при x=5 (x^2+3x+2) = 42.
+ *
+ * В конструктор полинома передаются его коэффициенты, начиная со старшего.
+ * Нули в середине и в конце пропускаться не должны, например: x^3+2x+1 --&gt; Polynom(1.0, 2.0, 0.0, 1.0)
+ * Старшие коэффициенты, равные нулю, игнорировать, например Polynom(0.0, 0.0, 5.0, 3.0) соответствует 5x+3
+ */
+<span class="nc" id="L25">class Polynom(vararg coeffs: Double) {</span>
+<span class="nc" id="L26">    private constructor(c: MutableList&lt;Double&gt;) : this(*c.toDoubleArray())</span>
+
+<span class="nc" id="L28">    private val c = coeffs.toList()</span>
+
+    /**
+     * Геттер: вернуть значение коэффициента при x^i
+     */
+<span class="nc" id="L33">    fun coeff(i: Int): Double = c[c.size - i - 1]</span>
+
+    /**
+     * Расчёт значения при заданном x
+     */
+    fun getValue(x: Double): Double {
+<span class="nc" id="L39">        var res = 0.0</span>
+<span class="nc bnc" id="L40" title="All 4 branches missed.">        for (i in c.indices) res += c[i] * x.pow(c.size - 1 - i)</span>
+<span class="nc" id="L41">        return res</span>
+    }
+
+    /**
+     * Степень (максимальная степень x при ненулевом слагаемом, например 2 для x^2+x+1).
+     *
+     * Степень полинома с нулевыми коэффициентами считать равной 0.
+     * Слагаемые с нулевыми коэффициентами игнорировать, т.е.
+     * степень 0x^2+0x+2 также равна 0.
+     */
+    fun degree(): Int {
+<span class="nc bnc" id="L52" title="All 8 branches missed.">        for (d in c.indices) if (c[d] != 0.0) return c.size - 1 - d</span>
+<span class="nc" id="L53">        return 0</span>
+    }
+
+    /**
+     * Сложение
+     */
+    operator fun plus(other: Polynom): Polynom {
+<span class="nc" id="L60">        val diff = this.c.size - other.c.size</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        val bigger = if (diff &gt;= 0) this.c else other.c</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        val smaller = if (diff &lt; 0) this.c else other.c</span>
+<span class="nc" id="L63">        val newc = mutableListOf&lt;Double&gt;()</span>
+<span class="nc bnc" id="L64" title="All 4 branches missed.">        for (i in 0 until abs(diff)) newc.add(bigger[i])</span>
+<span class="nc bnc" id="L65" title="All 4 branches missed.">        for (i in 0 until bigger.size - abs(diff)) newc.add(bigger[i + abs(diff)] + smaller[i])</span>
+<span class="nc" id="L66">        return Polynom(newc)</span>
+    }
+
+    /**
+     * Смена знака (при всех слагаемых)
+     */
+    operator fun unaryMinus(): Polynom {
+<span class="nc" id="L73">        val newc = mutableListOf&lt;Double&gt;()</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        for (t in c) newc.add(-t)</span>
+<span class="nc" id="L75">        return Polynom(newc)</span>
+    }
+
+    /**
+     * Вычитание
+     */
+<span class="nc" id="L81">    operator fun minus(other: Polynom): Polynom = this + other.unaryMinus()</span>
+
+    /**
+     * Умножение
+     */
+    operator fun times(other: Polynom): Polynom {
+<span class="nc" id="L87">        val left = mutableListOf&lt;Double&gt;()</span>
+<span class="nc" id="L88">        val right = mutableListOf&lt;Double&gt;()</span>
+<span class="nc" id="L89">        val res = mutableListOf&lt;Double&gt;()</span>
+<span class="nc" id="L90">        val resdeg = (this.c.size - 1) * (other.c.size - 1)</span>
+
+<span class="nc bnc" id="L92" title="All 4 branches missed.">        for (i in 0 until resdeg) {</span>
+<span class="nc" id="L93">            res.add(0.0)</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            if (i &lt; this.c.size)</span>
+<span class="nc" id="L95">                left.add(this.c[i])</span>
+            else
+<span class="nc" id="L97">                left.add(0.0)</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (i &lt; other.c.size)</span>
+<span class="nc" id="L99">                right.add(other.c[i])</span>
+            else
+<span class="nc" id="L101">                right.add(0.0)</span>
+        }
+<span class="nc bnc" id="L103" title="All 4 branches missed.">        for (i in res.indices) {</span>
+<span class="nc" id="L104">            var s = 0.0</span>
+<span class="nc bnc" id="L105" title="All 4 branches missed.">            for (r in i downTo 0) {</span>
+<span class="nc" id="L106">                s += right[r] * left[i - r]</span>
+            }
+<span class="nc" id="L108">            res[i] = s</span>
+        }
+<span class="nc" id="L110">        return Polynom(res)</span>
+    }
+
+    /**
+     * Деление
+     *
+     * Про операции деления и взятия остатка см. статью Википедии
+     * &quot;Деление многочленов столбиком&quot;. Основные свойства:
+     *
+     * Если A / B = C и A % B = D, то A = B * C + D и степень D меньше степени B
+     */
+<span class="nc" id="L121">    operator fun div(other: Polynom): Polynom = TODO()</span>
+
+    /**
+     * Взятие остатка
+     */
+<span class="nc" id="L126">    operator fun rem(other: Polynom): Polynom = TODO()</span>
+
+    /**
+     * Сравнение на равенство
+     */
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    override fun equals(other: Any?): Boolean = other is Polynom &amp;&amp;</span>
+<span class="nc bnc" id="L132" title="All 4 branches missed.">            (this - other).c.all { it == 0.0 }</span>
+
+    /**
+     * Получение хеш-кода
+     */
+<span class="nc" id="L137">    override fun hashCode(): Int = this.c.hashCode()</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

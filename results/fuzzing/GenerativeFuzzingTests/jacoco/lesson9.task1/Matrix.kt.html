@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Matrix.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson9.task1</a> &gt; <span class="el_source">Matrix.kt</span></div><h1>Matrix.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;, &quot;unused&quot;)
+
+package lesson9.task1
+
+// Урок 9: проектирование классов
+// Максимальное количество баллов = 40 (без очень трудных задач = 15)
+
+/**
+ * Ячейка матрицы: row = ряд, column = колонка
+ */
+<span class="nc" id="L11">data class Cell(val row: Int, val column: Int)</span>
+
+/**
+ * Интерфейс, описывающий возможности матрицы. E = тип элемента матрицы
+ */
+interface Matrix&lt;E&gt; {
+    /** Высота */
+    val height: Int
+
+    /** Ширина */
+    val width: Int
+
+    /**
+     * Доступ к ячейке.
+     * Методы могут бросить исключение, если ячейка не существует или пуста
+     */
+    operator fun get(row: Int, column: Int): E
+
+    operator fun get(cell: Cell): E
+
+    /**
+     * Запись в ячейку.
+     * Методы могут бросить исключение, если ячейка не существует
+     */
+    operator fun set(row: Int, column: Int, value: E)
+
+    operator fun set(cell: Cell, value: E)
+}
+
+/**
+ * Простая (2 балла)
+ *
+ * Метод для создания матрицы, должен вернуть РЕАЛИЗАЦИЮ Matrix&lt;E&gt;.
+ * height = высота, width = ширина, e = чем заполнить элементы.
+ * Бросить исключение IllegalArgumentException, если height или width &lt;= 0.
+ */
+fun &lt;E&gt; createMatrix(height: Int, width: Int, e: E): Matrix&lt;E&gt; =
+<span class="nc bnc" id="L48" title="All 4 branches missed.">    if (height &lt;= 0 || width &lt;= 0) throw IllegalArgumentException(&quot;&quot;) else MatrixImpl(height, width, e)</span>
+
+fun &lt;E&gt; createMatrix(height: Int, width: Int, values: List&lt;List&lt;E&gt;&gt;): Matrix&lt;E&gt; {
+<span class="nc" id="L51">    val matrix = createMatrix(height, width, values[0][0])</span>
+<span class="nc bnc" id="L52" title="All 4 branches missed.">    for (row in 0 until height) {</span>
+<span class="nc bnc" id="L53" title="All 4 branches missed.">        for (column in 0 until width) {</span>
+<span class="nc" id="L54">            matrix[row, column] = values[row][column]</span>
+        }
+    }
+<span class="nc" id="L57">    return matrix</span>
+}
+
+/**
+ * Средняя сложность (считается двумя задачами в 3 балла каждая)
+ *
+ * Реализация интерфейса &quot;матрица&quot;
+ */
+<span class="nc" id="L65">class MatrixImpl&lt;E&gt;(</span>
+<span class="nc" id="L66">    override val height: Int, override val width: Int,</span>
+    e: E
+) : Matrix&lt;E&gt; {
+<span class="nc" id="L69">    private val values = mutableMapOf&lt;Cell, E&gt;()</span>
+
+<span class="nc" id="L71">    init {</span>
+<span class="nc bnc" id="L72" title="All 4 branches missed.">        for (h in 0 until height)</span>
+<span class="nc bnc" id="L73" title="All 4 branches missed.">            for (w in 0 until width)</span>
+<span class="nc" id="L74">                values[Cell(h, w)] = e</span>
+<span class="nc" id="L75">    }</span>
+
+    override fun get(row: Int, column: Int): E =
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        values[Cell(row, column)] ?: throw IndexOutOfBoundsException(&quot;No such cell&quot;)</span>
+
+<span class="nc" id="L80">    override fun get(cell: Cell): E = get(cell.row, cell.column)</span>
+
+    override fun set(row: Int, column: Int, value: E) {
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (values[Cell(row, column)] != null)</span>
+<span class="nc" id="L84">            values[Cell(row, column)] = value</span>
+        else
+<span class="nc" id="L86">            throw IndexOutOfBoundsException(&quot;No such cell&quot;)</span>
+<span class="nc" id="L87">    }</span>
+
+    override fun set(cell: Cell, value: E) {
+<span class="nc" id="L90">        set(cell.row, cell.column, value)</span>
+<span class="nc" id="L91">    }</span>
+
+    override fun equals(other: Any?) =
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        other is MatrixImpl&lt;*&gt; &amp;&amp;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                height == other.height &amp;&amp;</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                width == other.width &amp;&amp;</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">                values == other.values</span>
+
+    override fun toString(): String {
+<span class="nc" id="L100">        val sb = StringBuilder()</span>
+<span class="nc" id="L101">        sb.append(&quot;[&quot;)</span>
+<span class="nc bnc" id="L102" title="All 4 branches missed.">        for (h in 0 until height - 1) {</span>
+<span class="nc" id="L103">            sb.append(&quot;[&quot;)</span>
+<span class="nc bnc" id="L104" title="All 4 branches missed.">            for (w in 0 until width - 1) {</span>
+<span class="nc" id="L105">                sb.append(values[Cell(h, w)]!!)</span>
+<span class="nc" id="L106">                sb.append(&quot;, &quot;)</span>
+            }
+<span class="nc" id="L108">            sb.append(values[Cell(h, width - 1)]!!)</span>
+<span class="nc" id="L109">            sb.append(&quot;], &quot;)</span>
+        }
+<span class="nc" id="L111">        sb.append(&quot;[&quot;)</span>
+<span class="nc bnc" id="L112" title="All 4 branches missed.">        for (w in 0 until width - 1) {</span>
+<span class="nc" id="L113">            sb.append(values[Cell(height - 1, w)]!!)</span>
+<span class="nc" id="L114">            sb.append(&quot;, &quot;)</span>
+        }
+<span class="nc" id="L116">        sb.append(values[Cell(height - 1, width - 1)]!!)</span>
+<span class="nc" id="L117">        sb.append(&quot;]]&quot;)</span>
+<span class="nc" id="L118">        return &quot;$sb&quot;</span>
+    }
+
+
+    override fun hashCode(): Int {
+<span class="nc" id="L123">        var result = height</span>
+<span class="nc" id="L124">        result = 31 * result + width</span>
+<span class="nc" id="L125">        result = 31 * result + values.hashCode()</span>
+<span class="nc" id="L126">        return result</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

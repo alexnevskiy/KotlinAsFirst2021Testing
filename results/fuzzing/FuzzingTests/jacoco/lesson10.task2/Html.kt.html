@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Html.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">kfirst</a> &gt; <a href="index.source.html" class="el_package">lesson10.task2</a> &gt; <span class="el_source">Html.kt</span></div><h1>Html.kt</h1><pre class="source lang-java linenums">@file:Suppress(&quot;UNUSED_PARAMETER&quot;)
+
+package lesson10.task2
+
+import kotlinx.html.*
+import kotlinx.html.stream.appendHTML
+
+/**
+ * Пример: преобразование списка списков в HTML таблицу (решение в лоб)
+ */
+fun List&lt;List&lt;String&gt;&gt;.convertToHtmlTable(): String {
+<span class="nc" id="L12">    val sb = StringBuilder()</span>
+<span class="nc" id="L13">    sb.append(&quot;&lt;html&gt;&quot;)</span>
+<span class="nc" id="L14">    sb.append(&quot;&lt;body&gt;&quot;)</span>
+<span class="nc" id="L15">    sb.append(&quot;&lt;table&gt;&quot;)</span>
+<span class="nc bnc" id="L16" title="All 2 branches missed.">    for (row in this) {</span>
+<span class="nc" id="L17">        sb.append(&quot;&lt;tr&gt;&quot;)</span>
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        for (data in row) {</span>
+<span class="nc" id="L19">            sb.append(&quot;&lt;td&gt;&quot;)</span>
+<span class="nc" id="L20">            sb.append(data)</span>
+<span class="nc" id="L21">            sb.append(&quot;&lt;/td&gt;&quot;)</span>
+        }
+<span class="nc" id="L23">        sb.append(&quot;&lt;/tr&gt;&quot;)</span>
+    }
+<span class="nc" id="L25">    sb.append(&quot;&lt;/table&gt;&quot;)</span>
+<span class="nc" id="L26">    sb.append(&quot;&lt;/body&gt;&quot;)</span>
+<span class="nc" id="L27">    sb.append(&quot;&lt;/html&gt;&quot;)</span>
+<span class="nc" id="L28">    return sb.toString()</span>
+}
+
+/**
+ * Пример: преобразование списка списков в HTML таблицу
+ * (через функции библиотеки kotlinx.html)
+ */
+fun List&lt;List&lt;String&gt;&gt;.convertToHtmlTableUsingKotlinxHtml(): String {
+<span class="nc" id="L36">    val inputList = this</span>
+<span class="nc" id="L37">    val sb = StringBuilder()</span>
+<span class="nc" id="L38">    sb.appendHTML().html {</span>
+<span class="nc" id="L39">        body {</span>
+<span class="nc" id="L40">            table {</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">                for (row in inputList) {</span>
+<span class="nc" id="L42">                    tr {</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">                        for (data in row) {</span>
+<span class="nc" id="L44">                            td { +data }</span>
+                        }
+<span class="nc" id="L46">                    }</span>
+                }
+<span class="nc" id="L48">            }</span>
+<span class="nc" id="L49">        }</span>
+<span class="nc" id="L50">    }</span>
+<span class="nc" id="L51">    return sb.toString()</span>
+}
+
+/**
+ * Пример: генерация простого HTML (собственный мини-DSL)
+ */
+fun generateSimpleHtml(s: String): String {
+<span class="nc" id="L58">    val sb = StringBuilder()</span>
+<span class="nc" id="L59">    sb.myHtml {</span>
+<span class="nc" id="L60">        myBody {</span>
+<span class="nc" id="L61">            +s</span>
+<span class="nc" id="L62">        }</span>
+<span class="nc" id="L63">    }</span>
+<span class="nc" id="L64">    return sb.toString()</span>
+}
+
+/**
+ * Средняя (5 баллов)
+ *
+ * Преобразовать заданный список строк в нумерованный список HTML.
+ * К примеру, из [&quot;Alpha&quot;, &quot;Beta&quot;, &quot;Omega&quot;] мы должны получить следующее
+ * &lt;html&gt;&lt;body&gt;
+ * &lt;ol&gt;
+ *     &lt;li&gt;Alpha&lt;/li&gt;
+ *     &lt;li&gt;Beta&lt;/li&gt;
+ *     &lt;li&gt;Omega&lt;/li&gt;
+ * &lt;/ol&gt;
+ * &lt;/body&gt;&lt;/html&gt;
+ *
+ * В этом задании вы должны заменить на реальный код содержимое функций myList, myItem, unaryPlus
+ * и использовать их в функции generateSimpleHtml
+ *
+ * Пробелы и переводы строк между тегами в этом задании значения не имеют.
+ */
+fun generateListHtml(list: List&lt;String&gt;): String {
+<span class="nc" id="L86">    val sb = StringBuilder()</span>
+<span class="nc" id="L87">    sb.myHtml {</span>
+<span class="nc" id="L88">        myBody {</span>
+<span class="nc" id="L89">            myList {</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                for (item in list)</span>
+<span class="nc" id="L91">                    myItem {</span>
+<span class="nc" id="L92">                        +item</span>
+<span class="nc" id="L93">                    }</span>
+<span class="nc" id="L94">            }</span>
+<span class="nc" id="L95">        }</span>
+<span class="nc" id="L96">    }</span>
+<span class="nc" id="L97">    return sb.toString()</span>
+}
+
+<span class="nc" id="L100">private class HTML(val sb: StringBuilder) {</span>
+    fun myBody(init: HTMLBody.() -&gt; Unit): HTMLBody {
+<span class="nc" id="L102">        val body = HTMLBody(sb)</span>
+<span class="nc" id="L103">        sb.append(&quot;&lt;body&gt;&quot;)</span>
+<span class="nc" id="L104">        body.init()</span>
+<span class="nc" id="L105">        sb.append(&quot;&lt;/body&gt;&quot;)</span>
+<span class="nc" id="L106">        return body</span>
+    }
+}
+
+<span class="nc" id="L110">private class HTMLBody(val sb: StringBuilder) {</span>
+    operator fun String.unaryPlus() {
+<span class="nc" id="L112">        sb.append(this)</span>
+<span class="nc" id="L113">    }</span>
+
+    fun myList(init: HTMLList.() -&gt; Unit): HTMLList {
+<span class="nc" id="L116">        val list = HTMLList(sb)</span>
+<span class="nc" id="L117">        sb.append(&quot;&lt;ol&gt;&quot;)</span>
+<span class="nc" id="L118">        list.init()</span>
+<span class="nc" id="L119">        sb.append(&quot;&lt;/ol&gt;&quot;)</span>
+<span class="nc" id="L120">        return list</span>
+    }
+}
+
+<span class="nc" id="L124">private class HTMLList(val sb: StringBuilder) {</span>
+    fun myItem(init: HTMLItem.() -&gt; Unit): HTMLItem {
+<span class="nc" id="L126">        val item = HTMLItem(sb)</span>
+<span class="nc" id="L127">        sb.append(&quot;&lt;li&gt;&quot;)</span>
+<span class="nc" id="L128">        item.init()</span>
+<span class="nc" id="L129">        sb.append(&quot;&lt;/li&gt;&quot;)</span>
+<span class="nc" id="L130">        return item</span>
+    }
+}
+
+<span class="nc" id="L134">private class HTMLItem(val sb: StringBuilder) {</span>
+    operator fun String.unaryPlus() {
+<span class="nc" id="L136">        sb.append(this)</span>
+<span class="nc" id="L137">    }</span>
+}
+
+private fun StringBuilder.myHtml(init: HTML.() -&gt; Unit): HTML {
+<span class="nc" id="L141">    val html = HTML(this)</span>
+<span class="nc" id="L142">    append(&quot;&lt;html&gt;&quot;)</span>
+<span class="nc" id="L143">    html.init()</span>
+<span class="nc" id="L144">    append(&quot;&lt;/html&gt;&quot;)</span>
+<span class="nc" id="L145">    return html</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
